@@ -91,9 +91,6 @@
   "old_price": {
     "type": "float"
   },
-  "pre_order": {
-    "type": "boolean"
-  },
   "categories": {
     "type": "text_keyword",
     "suggestable": true
@@ -118,6 +115,9 @@
   },
   "stock_status": {
     "type": "keyword"
+  },
+  "is_out_of_stock": {
+    "type": "integer"
   },
   "qty_increments": {
     "type": "integer"
