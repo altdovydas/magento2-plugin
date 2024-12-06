@@ -26,7 +26,11 @@ class FullPlugin
         $productIds = null
     ): Generator {
         if ('lupasearch' !== $this->engineResolver->getCurrentSearchEngine()) {
-            return $process($storeId, $productIds);
+            foreach ($process($storeId, $productIds) as $entityId => $index) {
+                yield $entityId => $index;
+            }
+
+            return;
         }
 
         $productIds = null === $productIds ? [] : array_unique($productIds);
