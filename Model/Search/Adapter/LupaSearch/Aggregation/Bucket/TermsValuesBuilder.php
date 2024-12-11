@@ -53,7 +53,9 @@ class TermsValuesBuilder implements ValuesBuilderInterface
 
     private function getOptionValue(ProductAttributeInterface $attribute, string $value): ?string
     {
-        return $attribute->usesSource() ? $attribute->getSource()->getOptionId($value) : $value;
+        $value = $attribute->usesSource() ? $attribute->getSource()->getOptionId($value) : $value;
+
+        return $value ? (string)$value : null;
     }
 
     private function getAttribute(string $fieldCode): ?ProductAttributeInterface
