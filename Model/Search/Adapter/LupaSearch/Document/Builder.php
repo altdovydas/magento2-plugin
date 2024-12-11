@@ -40,7 +40,7 @@ class Builder implements BuilderInterface
                                 [
                                     'data' => [
                                         AttributeInterface::ATTRIBUTE_CODE => 'score',
-                                        AttributeInterface::VALUE => $item[Relevance::FIELD_RELEVANCE]
+                                        AttributeInterface::VALUE => 0,
                                     ],
                                 ],
                             )

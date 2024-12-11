@@ -2,6 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="LupaSearch\LupaSearchPlugin\Api\LupaSearchMapInterface" type="LupaSearch\LupaSearchPlugin\Model\LupaSearchMap"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Adapter\Index\IndexProviderInterface" type="LupaSearch\LupaSearchPlugin\Model\Adapter\Index\IndexProvider"/>
+    <preference for="LupaSearch\LupaSearchPlugin\Model\Adapter\Query\QueryProviderInterface" type="LupaSearch\LupaSearchPlugin\Model\Adapter\Query\QueryProvider"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Adapter\SearchEngineAdapterInterface" type="LupaSearch\LupaSearchPlugin\Model\Adapter\LupaSearch"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Adapter\QueriesManagementInterface" type="LupaSearch\LupaSearchPlugin\Model\Adapter\LupaSearchQueriesManagement"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Adapter\SearchEnginePoolInterface" type="LupaSearch\LupaSearchPlugin\Model\Adapter\SearchEnginePool"/>
@@ -42,6 +43,7 @@
     <preference for="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SearchQuery\Configuration\SortBuilderInterface" type="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SearchQuery\Configuration\SortBuilder"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SearchQuery\SearchQueryConfigurationBuilderInterface" type="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SearchQuery\SearchQueryConfigurationBuilder"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SuggestionQueryBuilderInterface" type="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SuggestionQueryBuilder"/>
+    <preference for="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\QueryInterface" type="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Query"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\QueriesGeneratorInterface" type="LupaSearch\LupaSearchPlugin\Model\QueriesGenerator"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\QueryManagerInterface" type="LupaSearch\LupaSearchPlugin\Model\QueryManager"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\QueryBuildersPoolInterface" type="LupaSearch\LupaSearchPlugin\Model\QueryBuildersPool"/>
