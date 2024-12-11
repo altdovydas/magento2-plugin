@@ -1,6 +1,6 @@
 {
     "name": "lupasearch/magento2-lupasearch-plugin",
-    "version": "1.0.6",
+    "version": "1.1.0",
     "description": "LupaSearch module",
     "type": "magento2-module",
     "config": {
@@ -30,7 +30,7 @@
         "monolog/monolog": "*",
         "symfony/console": "*",
         "psr/log": "*",
-        "lupasearch/magento2-lupasearch-plugin-core": "^1.0.0"
+        "lupasearch/magento2-lupasearch-plugin-core": "~1.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9",
@@ -56,10 +56,7 @@
     ],
     "archive": {
         "exclude": [
-            "/Test",
-            ".gitattributes",
-            ".gitignore",
-            "phpunit.xml"
+            ".gitattributes"
         ]
     }
 }
