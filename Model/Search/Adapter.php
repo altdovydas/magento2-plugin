@@ -6,7 +6,7 @@ namespace LupaSearch\LupaSearchPlugin\Model\Search;
 
 use LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Aggregation\BuilderInterface as AggregationBuilderInterface;
 use LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Document\BuilderInterface as DocumentBuilderInterface;
-use LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\QueriesInterface;
+use LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\QueryInterface;
 use Magento\Framework\Search\AdapterInterface;
 use Magento\Framework\Search\RequestInterface;
 use Magento\Framework\Search\Response\QueryResponse;
@@ -14,7 +14,7 @@ use Magento\Framework\Search\Response\QueryResponseFactory;
 
 class Adapter implements AdapterInterface
 {
-    private QueriesInterface $queries;
+    private QueryInterface $query;
 
     private QueryResponseFactory $responseFactory;
 
@@ -23,12 +23,12 @@ class Adapter implements AdapterInterface
     private DocumentBuilderInterface $documentBuilder;
 
     public function __construct(
-        QueriesInterface $queries,
+        QueryInterface $query,
         QueryResponseFactory $responseFactory,
         AggregationBuilderInterface $aggregationBuilder,
         DocumentBuilderInterface $documentBuilder
     ) {
-        $this->queries = $queries;
+        $this->query = $query;
         $this->responseFactory = $responseFactory;
         $this->aggregationBuilder = $aggregationBuilder;
         $this->documentBuilder = $documentBuilder;
@@ -36,7 +36,7 @@ class Adapter implements AdapterInterface
 
     public function query(RequestInterface $request): QueryResponse
     {
-        $response = $this->queries->testDocument($request);
+        $response = $this->query->document($request);
 
         return $this->responseFactory->create(
             [

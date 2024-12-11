@@ -7,6 +7,7 @@ namespace LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Aggregatio
 use LupaSearch\LupaSearchPlugin\Model\QueryBuilder\FacetTypeProviderInterface;
 use LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Aggregation\Bucket\ValuesBuilderInterface;
 use LupaSearch\LupaSearchPluginCore\Api\Data\SearchQueries\DocumentQueryResponseInterface;
+use Magento\CatalogSearch\Model\Search\RequestGenerator;
 use Magento\Elasticsearch\SearchAdapter\AggregationFactory;
 use Magento\Framework\Api\Search\AggregationInterface;
 use Magento\Framework\Search\RequestInterface;
@@ -49,14 +50,16 @@ class Builder implements BuilderInterface
                 continue;
             }
 
+            $name = strtolower($facet->get('label')) . RequestGenerator::BUCKET_SUFFIX;
+
             if (FacetTypeProviderInterface::STATS === $facet->get('type')) {
                 // Hack Lupasearch not supporting std_deviation and count for stats aggregation
-                $aggregations[$facet->get('label')] = $builder->setRequest($request)->build($facet, $request);
+                $aggregations[$name] = $builder->setRequest($request)->build($facet, $request);
 
                 continue;
             }
 
-            $aggregations[$facet->get('label')] = $builder->build($facet);
+            $aggregations[$name] = $builder->build($facet);
         }
 
         return $this->aggregationFactory->create($aggregations);
