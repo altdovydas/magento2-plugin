@@ -71,13 +71,13 @@ class CreateQuery extends Command
             $this->state->setAreaCode('frontend');
             $option = (string)$input->getArgument('type');
             $storeId = (int)$input->getArgument('store_id');
-            $output->writeln(__('Creating...'));
+            $output->writeln((string)__('Creating...'));
             $output->writeln('Query: ' . $this->queryManager->generate($option, $storeId));
-            $output->writeln(__('Done.'));
+            $output->writeln((string)__('Done.'));
         } catch (Throwable $e) {
             $this->logger->error($e);
             $output->writeln($e->getMessage());
-            $output->writeln(__('There was an exception. Please check the logs for more information.'));
+            $output->writeln((string)__('There was an exception. Please check the logs for more information.'));
 
             return Cli::RETURN_FAILURE;
         }
