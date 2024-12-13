@@ -186,7 +186,7 @@ class QueryManager implements QueryManagerInterface
                 return 'Category';
 
             default:
-                throw new NotFoundException(__('Unknown query type.'));
+                return $type;
         }
     }
 

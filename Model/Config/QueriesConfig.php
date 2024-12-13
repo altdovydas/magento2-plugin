@@ -10,6 +10,8 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Store\Model\ScopeInterface;
 
+use function substr;
+
 class QueriesConfig implements QueriesConfigInterface
 {
     private const XML_PATH_BOOST_FUNCTION_COEFFICIENT = 'lupasearch/queries/boost_function_coefficient';
@@ -95,9 +97,10 @@ class QueriesConfig implements QueriesConfigInterface
 
     /**
      * @param array{0?: string|null, 1?: int|null} $arguments
+     * @return string|void
      * @throws Exception
      */
-    public function __call(string $name, array $arguments): void
+    public function __call(string $name, array $arguments)
     {
         $queryType = substr($name, 3);
         $path = $this->queriesConfigPool->getConfigPath($queryType);
@@ -106,25 +109,21 @@ class QueriesConfig implements QueriesConfigInterface
             throw new Exception('Unknown method ' . $name);
         }
 
-        $value = $arguments[0];
+        $type = substr($name, 0, 3);
 
-        if (!$value) {
-            throw new Exception('Value is required');
+        if ('get' === $type) {
+            return $this->getStoreConfig($path, $arguments[0] ?? 0);
         }
 
-        $scopeId = (int)($arguments[1] ?? 0);
-        $value = (string)$value;
+        if ('set' === $type) {
+            $value = (string)($arguments[0] ?? 0);
+            $scopeId = (int)($arguments[1] ?? 0);
+            $this->saveStoreConfig($value, $path, $scopeId);
 
-        switch (substr($name, 0, 3)) {
-            case 'get':
-                $this->getStoreConfig($path, $scopeId);
-                break;
-            case 'set':
-                $this->saveStoreConfig($value, $path, $scopeId);
-                break;
-            default:
-                throw new Exception('Unknown method ' . $name);
+            return;
         }
+
+        throw new Exception('Unknown method ' . $name);
     }
 
     private function getStoreConfig(string $path, int $scopeCode): ?string
@@ -134,7 +133,7 @@ class QueriesConfig implements QueriesConfigInterface
 
     private function saveStoreConfig(string $value, string $path, int $scopeId): void
     {
-        if ($this->getStoreConfig($path, $scopeId) === $value) {
+        if ('' === $value || $this->getStoreConfig($path, $scopeId) === $value) {
             return;
         }
 
