@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LupaSearch\LupaSearchPlugin\Model\Config;
 
+use Exception;
 use Magento\Framework\App\Config\ReinitableConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
@@ -11,9 +12,7 @@ use Magento\Store\Model\ScopeInterface;
 
 class QueriesConfig implements QueriesConfigInterface
 {
-    private const XML_CONFIG_PATH_QUERY = 'lupasearch/queries/';
-
-    private const DELIMITER = ',';
+    private const XML_PATH_BOOST_FUNCTION_COEFFICIENT = 'lupasearch/queries/boost_function_coefficient';
 
     private ScopeConfigInterface $scopeConfig;
 
@@ -21,73 +20,111 @@ class QueriesConfig implements QueriesConfigInterface
 
     private ReinitableConfigInterface $reinitableConfig;
 
+    private QueriesConfigPool $queriesConfigPool;
+
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         WriterInterface $configWriter,
-        ReinitableConfigInterface $reinitableConfig
+        ReinitableConfigInterface $reinitableConfig,
+        QueriesConfigPool $queriesConfigPool
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->configWriter = $configWriter;
         $this->reinitableConfig = $reinitableConfig;
+        $this->queriesConfigPool = $queriesConfigPool;
     }
 
     public function getProduct(?int $scopeCode = 0): ?string
     {
-        return $this->getStoreConfig($this->getQueryConfigPath('product/key'), $scopeCode);
+        return $this->getStoreConfig($this->queriesConfigPool->getConfigPath('Product'), $scopeCode);
     }
 
     public function getProductCatalog(?int $scopeCode = 0): ?string
     {
-        return $this->getStoreConfig($this->getQueryConfigPath('product/catalog_key'), $scopeCode);
+        return $this->getStoreConfig($this->queriesConfigPool->getConfigPath('ProductCatalog'), $scopeCode);
     }
 
     public function getProductSearchBox(?int $scopeCode = 0): ?string
     {
-        return $this->getStoreConfig($this->getQueryConfigPath('product/search_box_key'), $scopeCode);
+        return $this->getStoreConfig($this->queriesConfigPool->getConfigPath('ProductSearchBox'), $scopeCode);
     }
 
     public function getProductSuggestion(?int $scopeCode = 0): ?string
     {
-        return $this->getStoreConfig($this->getQueryConfigPath('product/suggest_key'), $scopeCode);
+        return $this->getStoreConfig($this->queriesConfigPool->getConfigPath('ProductSuggestion'), $scopeCode);
     }
 
     public function getCategory(?int $scopeCode = 0): ?string
     {
-        return $this->getStoreConfig($this->getQueryConfigPath('category'), $scopeCode);
+        return $this->getStoreConfig($this->queriesConfigPool->getConfigPath('Category'), $scopeCode);
     }
 
     public function setProduct(string $query, ?int $scopeId = 0): void
     {
-        $this->saveStoreConfig($query, $this->getQueryConfigPath('product/key'), $scopeId);
+        $this->saveStoreConfig($query, $this->queriesConfigPool->getConfigPath('Product'), $scopeId);
     }
 
     public function setProductCatalog(string $query, ?int $scopeId = 0): void
     {
-        $this->saveStoreConfig($query, $this->getQueryConfigPath('product/catalog_key'), $scopeId);
+        $this->saveStoreConfig($query, $this->queriesConfigPool->getConfigPath('ProductCatalog'), $scopeId);
     }
 
     public function setProductSearchBox(string $query, ?int $scopeId = 0): void
     {
-        $this->saveStoreConfig($query, $this->getQueryConfigPath('product/search_box_key'), $scopeId);
+        $this->saveStoreConfig($query, $this->queriesConfigPool->getConfigPath('ProductSearchBox'), $scopeId);
     }
 
     public function setProductSuggestion(string $query, ?int $scopeId = 0): void
     {
-        $this->saveStoreConfig($query, $this->getQueryConfigPath('product/suggest_key'), $scopeId);
+        $this->saveStoreConfig($query, $this->queriesConfigPool->getConfigPath('ProductSuggestion'), $scopeId);
     }
 
     public function setCategory(string $query, ?int $scopeId = 0): void
     {
-        $this->saveStoreConfig($query, $this->getQueryConfigPath('category'), $scopeId);
+        $this->saveStoreConfig($query, $this->queriesConfigPool->getConfigPath('Category'), $scopeId);
     }
 
     public function getBoostFunctionCoefficient(?int $scopeCode = 0): float
     {
         return (float)$this->scopeConfig->getValue(
-            $this->getQueryConfigPath('boost_function_coefficient'),
+            self::XML_PATH_BOOST_FUNCTION_COEFFICIENT,
             ScopeInterface::SCOPE_STORES,
             $scopeCode,
         );
+    }
+
+    /**
+     * @param array{0?: string|null, 1?: int|null} $arguments
+     * @throws Exception
+     */
+    public function __call(string $name, array $arguments): void
+    {
+        $queryType = substr($name, 3);
+        $path = $this->queriesConfigPool->getConfigPath($queryType);
+
+        if (!$path) {
+            throw new Exception('Unknown method ' . $name);
+        }
+
+        $value = $arguments[0];
+
+        if (!$value) {
+            throw new Exception('Value is required');
+        }
+
+        $scopeId = (int)($arguments[1] ?? 0);
+        $value = (string)$value;
+
+        switch (substr($name, 0, 3)) {
+            case 'get':
+                $this->getStoreConfig($path, $scopeId);
+                break;
+            case 'set':
+                $this->saveStoreConfig($value, $path, $scopeId);
+                break;
+            default:
+                throw new Exception('Unknown method ' . $name);
+        }
     }
 
     private function getStoreConfig(string $path, int $scopeCode): ?string
@@ -103,10 +140,5 @@ class QueriesConfig implements QueriesConfigInterface
 
         $this->configWriter->save($path, $value, ScopeInterface::SCOPE_STORES, $scopeId);
         $this->reinitableConfig->reinit();
-    }
-
-    private function getQueryConfigPath(string $type): string
-    {
-        return self::XML_CONFIG_PATH_QUERY . $type;
     }
 }
