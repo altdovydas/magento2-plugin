@@ -74,13 +74,13 @@ class ReindexStore extends Command
                 return Cli::RETURN_FAILURE;
             }
 
-            $output->writeln(__('Pushing ids in queue...'));
+            $output->writeln((string)__('Pushing ids in queue...'));
             $fullIndexer->executeByStore($storeId);
-            $output->writeln(__('Done.'));
+            $output->writeln((string)__('Done.'));
         } catch (Exception $exception) {
             $this->logger->error($exception . PHP_EOL . $exception->getTraceAsString());
             $output->writeln($exception->getMessage());
-            $output->writeln(__('There was an exception. Please check the logs for more information.'));
+            $output->writeln((string)__('There was an exception. Please check the logs for more information.'));
 
             return Cli::RETURN_FAILURE;
         }

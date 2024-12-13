@@ -72,23 +72,23 @@ class ReindexProduct extends Command
         try {
             $indexerName = $input->getArgument('price') ? 'price' : 'product';
             $fullIndexer = $this->rowsPoll->get($indexerName);
-            $output->writeln(__('Searching...'));
+            $output->writeln((string)__('Searching...'));
             $ids = $this->getIds($input);
 
             if (empty($ids)) {
-                $output->writeln(__('No products were found matching your condition.'));
+                $output->writeln((string)__('No products were found matching your condition.'));
 
                 return Cli::RETURN_SUCCESS;
             }
 
-            $output->writeln(__('Found: ' . count($ids)));
-            $output->writeln(__('Pushing products in queue...'));
+            $output->writeln((string)__('Found: ' . count($ids)));
+            $output->writeln((string)__('Pushing products in queue...'));
             $fullIndexer->executeByStore($this->getStoreId($input), $ids);
-            $output->writeln(__('Done.'));
+            $output->writeln((string)__('Done.'));
         } catch (Exception $exception) {
             $this->logger->error($exception . PHP_EOL . $exception->getTraceAsString());
             $output->writeln($exception->getMessage());
-            $output->writeln(__('There was an exception. Please check the logs for more information.'));
+            $output->writeln((string)__('There was an exception. Please check the logs for more information.'));
 
             return Cli::RETURN_FAILURE;
         }
@@ -115,8 +115,7 @@ class ReindexProduct extends Command
     private function getSku(InputInterface $input): string
     {
         $sku = (string)$input->getArgument('sku');
-        $sku = str_replace('*', '%', $sku);
 
-        return $sku;
+        return str_replace('*', '%', $sku);
     }
 }
