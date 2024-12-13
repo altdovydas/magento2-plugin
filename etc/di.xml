@@ -61,6 +61,18 @@
     <preference for="LupaSearch\LupaSearchPlugin\Model\SuggestionsGeneratorInterface" type="LupaSearch\LupaSearchPlugin\Model\SuggestionsGenerator"/>
     <preference for="Magento\Setup\Model\SearchConfigOptionsList" type="LupaSearch\LupaSearchPlugin\Setup\SearchConfigOptionsList"/>
 
+    <type name="LupaSearch\LupaSearchPlugin\Model\Config\QueriesConfigPool">
+        <arguments>
+            <argument name="configPool" xsi:type="array">
+                <item name="Product" xsi:type="string">lupasearch/queries/product/key</item>
+                <item name="ProductCatalog" xsi:type="string">lupasearch/queries/product/catalog_key</item>
+                <item name="ProductSearchBox" xsi:type="string">lupasearch/queries/product/search_box_key</item>
+                <item name="ProductSuggestion" xsi:type="string">lupasearch/queries/product/suggest_key</item>
+                <item name="Category" xsi:type="string">lupasearch/queries/category</item>
+            </argument>
+        </arguments>
+    </type>
+
     <type name="Magento\Search\Setup\CompositeInstallConfig">
         <arguments>
             <argument name="installConfigList" xsi:type="array">
