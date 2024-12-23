@@ -647,6 +647,12 @@
         </arguments>
     </type>
 
+    <type name="LupaSearch\LupaSearchPlugin\Model\Product\Modifiers\CategoryIds">
+        <arguments>
+            <argument name="parentIdsProvider" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Provider\CategoryParentIdsCache</argument>
+        </arguments>
+    </type>
+
     <virtualType name="LupaSearch\LupaSearchPlugin\Model\Product\Data\Modifier" type="LupaSearch\LupaSearchPlugin\Model\Provider\DataModifier">
         <arguments>
             <argument name="modifiers" xsi:type="array">
