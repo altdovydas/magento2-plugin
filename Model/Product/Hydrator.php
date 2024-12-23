@@ -50,8 +50,23 @@ class Hydrator implements ProductHydratorInterface
     private function formatValue($value)
     {
         $isArray = is_array($value);
-        $value = $isArray ? array_unique($value) : $value;
+        $value = $isArray ? $this->unique($value) : $value;
 
         return $isArray && isset($value[0]) ? array_values($value) : $value;
+    }
+
+    private function unique(array $value): array
+    {
+        $isFlattened = false;
+
+        foreach ($value as $item) {
+            if (is_array($item)) {
+                $isFlattened = true;
+
+                break;
+            }
+        }
+
+        return $isFlattened ? $value : array_unique($value);
     }
 }
