@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LupaSearch\LupaSearchPlugin\Plugin\Model\Indexer\Fulltext\Action;
 
 use Generator;
+use LupaSearch\LupaSearchPlugin\Setup\ConfigOptionsList;
 use Magento\CatalogSearch\Model\Indexer\Fulltext\Action\Full as Subject;
 use Magento\Framework\Search\EngineResolverInterface;
 
@@ -25,7 +26,7 @@ class FullPlugin
         $storeId,
         $productIds = null
     ): Generator {
-        if ('lupasearch' !== $this->engineResolver->getCurrentSearchEngine()) {
+        if (ConfigOptionsList::SEARCH_ENGINE !== $this->engineResolver->getCurrentSearchEngine()) {
             foreach ($process($storeId, $productIds) as $entityId => $index) {
                 yield $entityId => $index;
             }

@@ -13,6 +13,8 @@ use Magento\Framework\Setup\Option\TextConfigOption;
 
 class ConfigOptionsList implements ConfigOptionsListInterface
 {
+    public const SEARCH_ENGINE = 'lupasearch';
+
     public const INPUT_KEY_LUPASEARCH_API_KEY = 'lupasearch-api-key';
 
     public const INPUT_KEY_LUPASEARCH_EMAIL = 'lupasearch-email';
@@ -115,7 +117,7 @@ class ConfigOptionsList implements ConfigOptionsListInterface
      */
     public function validate(array $options, DeploymentConfig $deploymentConfig)
     {
-        if ('lupasearch' !== $deploymentConfig->get(EngineInterface::CONFIG_ENGINE_PATH)) {
+        if (self::SEARCH_ENGINE !== $deploymentConfig->get(EngineInterface::CONFIG_ENGINE_PATH)) {
             return [];
         }
 

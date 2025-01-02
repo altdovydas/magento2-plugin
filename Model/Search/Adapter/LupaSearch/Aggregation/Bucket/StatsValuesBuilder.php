@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Aggregation\Bucket;
 
-use LupaSearch\LupaSearchPlugin\Model\Adapter\Index\IndexProviderInterface;
+use LupaSearch\LupaSearchPlugin\Model\Adapter\Query\QueryProviderInterface;
 use LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\DocumentQueryBuilderInterface;
 use LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SearchQueryBuilderInterface;
 use LupaSearch\LupaSearchPluginCore\Api\Data\SearchQueries\DocumentQueryResponseInterface;
 use LupaSearch\LupaSearchPluginCore\Api\Data\SearchQueries\OrderedMapInterface;
 use LupaSearch\LupaSearchPluginCore\Api\Data\SearchQueries\SearchQueryInterface;
-use LupaSearch\LupaSearchPluginCore\Api\SearchQueriesApiInterface;
+use LupaSearch\LupaSearchPluginCore\Api\PublicQueryApiInterface;
+use LupaSearch\LupaSearchPluginCore\Api\PublicQueryApiInterfaceFactory as PublicQueryApiFactory;
 use LupaSearch\LupaSearchPluginCore\Api\SearchQueriesApiInterfaceFactory;
 use LupaSearch\LupaSearchPluginCore\Model\LupaClientFactoryInterface;
 use Magento\Framework\Search\Request;
@@ -25,18 +26,36 @@ use Magento\Store\Model\StoreDimensionProvider;
 class StatsValuesBuilder implements ValuesBuilderInterface
 {
     private ?RequestInterface $request = null;
+    private LupaClientFactoryInterface $lupaClientFactory;
+    private PublicQueryApiFactory $publicQueryApiFactory;
+    private QueryProviderInterface $queryProvider;
+    private SearchQueryBuilderInterface $searchQueryBuilder;
+    private DocumentQueryBuilderInterface $documentQueryBuilder;
+    private ValuesBuilderInterface $valuesBuilder;
+    private RangeBucketFactory $rangeBucketFactory;
+    private RangeFactory $rangeFactory;
+    private RequestFactory $requestFactory;
 
     public function __construct(
-        private LupaClientFactoryInterface $lupaClientFactory,
-        private SearchQueriesApiInterfaceFactory $searchQueriesApiFactory,
-        private IndexProviderInterface $indexProvider,
-        private SearchQueryBuilderInterface $searchQueryBuilder,
-        private DocumentQueryBuilderInterface $documentQueryBuilder,
-        private ValuesBuilderInterface $valuesBuilder,
-        private RangeBucketFactory $rangeBucketFactory,
-        private RangeFactory $rangeFactory,
-        private RequestFactory $requestFactory,
+        LupaClientFactoryInterface $lupaClientFactory,
+        PublicQueryApiFactory $publicQueryApiFactory,
+        QueryProviderInterface $queryProvider,
+        SearchQueryBuilderInterface $searchQueryBuilder,
+        DocumentQueryBuilderInterface $documentQueryBuilder,
+        ValuesBuilderInterface $valuesBuilder,
+        RangeBucketFactory $rangeBucketFactory,
+        RangeFactory $rangeFactory,
+        RequestFactory $requestFactory
     ) {
+        $this->requestFactory = $requestFactory;
+        $this->rangeFactory = $rangeFactory;
+        $this->rangeBucketFactory = $rangeBucketFactory;
+        $this->valuesBuilder = $valuesBuilder;
+        $this->documentQueryBuilder = $documentQueryBuilder;
+        $this->searchQueryBuilder = $searchQueryBuilder;
+        $this->queryProvider = $queryProvider;
+        $this->publicQueryApiFactory = $publicQueryApiFactory;
+        $this->lupaClientFactory = $lupaClientFactory;
     }
 
     public function setRequest(RequestInterface $request): ValuesBuilderInterface
@@ -56,8 +75,20 @@ class StatsValuesBuilder implements ValuesBuilderInterface
         }
 
         $searchResult = $this->getResult($facet);
+        $facet = $this->getFacet($searchResult, $facet);
 
-        return $this->valuesBuilder->build($searchResult->getFacets()[0]);
+        return $this->valuesBuilder->build($facet);
+    }
+
+    private function getFacet(DocumentQueryResponseInterface $result, OrderedMapInterface $filter): ?OrderedMapInterface
+    {
+        foreach ($result->getFacets() as $facet) {
+            if ($facet->get('key') === $filter->get('key')) {
+                return $facet;
+            }
+        }
+
+        return null;
     }
 
     private function getSearchQuery(OrderedMapInterface $facet): SearchQueryInterface
@@ -95,16 +126,17 @@ class StatsValuesBuilder implements ValuesBuilderInterface
 
     private function getResult(OrderedMapInterface $facet): DocumentQueryResponseInterface
     {
-        return $this->getApi()->testSearchQuery(
-            $this->indexProvider->getIdByRequest($this->request),
-            $this->getSearchQuery($facet),
-            $this->documentQueryBuilder->build($this->request),
+        $request = $this->createRangeRequest($facet);
+
+        return $this->getApi()->post(
+            $this->queryProvider->getSearch($request),
+            $this->documentQueryBuilder->build($request),
         );
     }
 
-    private function getApi(): SearchQueriesApiInterface
+    private function getApi(): PublicQueryApiInterface
     {
-        return $this->searchQueriesApiFactory->create(
+        return $this->publicQueryApiFactory->create(
             ['client' => $this->lupaClientFactory->create($this->getStoreId())]
         );
     }
