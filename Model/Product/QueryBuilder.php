@@ -27,6 +27,8 @@ class QueryBuilder extends AbstractQueryBuilder
 
     private FacetTypeProviderInterface $facetTypeProvider;
 
+    private array $filterableFields = [];
+
     /**
      * @param string[] $attributeToSelect
      */
@@ -36,7 +38,8 @@ class QueryBuilder extends AbstractQueryBuilder
         QueryConfigurationFactoryInterface $queryConfigurationFactory,
         FilterableAttributesProviderInterface $filterableAttributesProvider,
         FacetTypeProviderInterface $facetTypeProvider,
-        array $attributeToSelect = []
+        array $attributeToSelect = [],
+        array $filterableFields = []
     ) {
         parent::__construct(
             $boostProvider,
@@ -47,6 +50,7 @@ class QueryBuilder extends AbstractQueryBuilder
 
         $this->filterableAttributesProvider = $filterableAttributesProvider;
         $this->facetTypeProvider = $facetTypeProvider;
+        $this->filterableFields = $filterableFields;
     }
 
     /**
@@ -83,22 +87,7 @@ class QueryBuilder extends AbstractQueryBuilder
             return [];
         }
 
-        return [
-            'ep_boolean_*',
-            'ep_int_*',
-            'ep_long_*',
-            'ep_float_*',
-            'ep_double_*',
-            'ep_string_*"',
-            'ep_text_*',
-            'ep_date_*',
-            'price',
-            'category',
-            'category_id',
-            'category_ids',
-            'categories',
-            'sources',
-        ];
+        return $this->filterableFields;
     }
 
     private function createFacet(string $attributeId, AbstractAttribute $attribute): OrderedMapInterface
