@@ -442,6 +442,22 @@
                 <item name="category_id" xsi:type="string">category_id</item>
                 <item name="category_ids" xsi:type="string">category_ids</item>
             </argument>
+            <argument name="filterableFields" xsi:type="array">
+                <item name="ep_boolean_*" xsi:type="string">ep_boolean_*</item>
+                <item name="ep_int_*" xsi:type="string">ep_int_*</item>
+                <item name="ep_long_*" xsi:type="string">ep_long_*</item>
+                <item name="ep_float_*" xsi:type="string">ep_float_*</item>
+                <item name="ep_double_*" xsi:type="string">ep_double_*</item>
+                <item name="ep_string_*" xsi:type="string">ep_string_*</item>
+                <item name="ep_text_*" xsi:type="string">ep_text_*</item>
+                <item name="ep_date_*" xsi:type="string">ep_date_*</item>
+                <item name="price" xsi:type="string">price</item>
+                <item name="category" xsi:type="string">category</item>
+                <item name="category_id" xsi:type="string">category_id</item>
+                <item name="category_ids" xsi:type="string">category_ids</item>
+                <item name="categories" xsi:type="string">categories</item>
+                <item name="sources" xsi:type="string">sources</item>
+            </argument>
         </arguments>
     </type>
 
