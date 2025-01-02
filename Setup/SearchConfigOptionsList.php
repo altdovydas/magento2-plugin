@@ -23,7 +23,7 @@ class SearchConfigOptionsList extends BaseSearchConfigOptionsList
     public function getAvailableSearchEngineList(): array
     {
         $result = parent::getAvailableSearchEngineList();
-        $result['lupasearch'] = 'LupaSearch';
+        $result[ConfigOptionsList::SEARCH_ENGINE] = 'LupaSearch';
 
         return $result;
     }
