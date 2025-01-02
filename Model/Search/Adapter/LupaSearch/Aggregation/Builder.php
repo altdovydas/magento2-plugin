@@ -13,6 +13,8 @@ use Magento\Framework\Api\Search\AggregationInterface;
 use Magento\Framework\Search\RequestInterface;
 
 use function array_filter;
+use function str_replace;
+use function strtolower;
 
 class Builder implements BuilderInterface
 {
@@ -50,7 +52,7 @@ class Builder implements BuilderInterface
                 continue;
             }
 
-            $name = strtolower($facet->get('label')) . RequestGenerator::BUCKET_SUFFIX;
+            $name = str_replace(' ', '_', strtolower($facet->get('label'))) . RequestGenerator::BUCKET_SUFFIX;
 
             if (FacetTypeProviderInterface::STATS === $facet->get('type')) {
                 // Hack Lupasearch not supporting std_deviation and count for stats aggregation
