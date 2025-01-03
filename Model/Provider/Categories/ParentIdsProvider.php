@@ -63,7 +63,7 @@ class ParentIdsProvider implements ParentIdsProviderInterface
             }
             $categoryId = (int)$categoryId;
             $path = explode('/', $path);
-            $path = array_slice($path, 2);
+            $path = array_slice($path, 2, -1);
             $path = array_values($path);
             $path = array_map('intval', $path);
 
