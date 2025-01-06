@@ -12,6 +12,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Search\Request\Filter\Range;
 use Magento\Framework\Search\Request\FilterInterface;
 
+use function array_filter;
 use function array_map;
 use function in_array;
 
@@ -47,7 +48,7 @@ class FilterValueProvider implements FilterValueProviderInterface
     public function get(FilterInterface $reference): array
     {
         if ($reference instanceof Range) {
-            return ['gt' => $reference->getFrom(), 'lte' => $reference->getTo()];
+            return array_filter(['gt' => $reference->getFrom(), 'lte' => $reference->getTo()]);
         }
 
         $attributeCode = $reference->getField();
