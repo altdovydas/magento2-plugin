@@ -80,7 +80,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     protected function addSelectFields(SearchQueryInterface $searchQuery): void
     {
         $configuration = $searchQuery->getConfiguration();
-        $configuration->setSelectFields($this->attributeToSelect);
+        $configuration->setSelectFields($this->getAttributeToSelect());
     }
 
     protected function addFilterableFields(SearchQueryInterface $searchQuery): void
@@ -136,5 +136,13 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     protected function getFilterableFields(SearchQueryInterface $searchQuery): array
     {
         return [];
+    }
+
+    /**
+     * @return string[]
+     */
+    protected function getAttributeToSelect(): array
+    {
+        return $this->attributeToSelect;
     }
 }
