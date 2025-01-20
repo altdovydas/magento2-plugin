@@ -12,6 +12,7 @@ use function array_intersect_key;
 use function array_map;
 use function array_values;
 use function explode;
+use function is_string;
 
 class ParentIdsProvider implements ParentIdsProviderInterface
 {
@@ -57,6 +58,9 @@ class ParentIdsProvider implements ParentIdsProviderInterface
         $parentIds = [];
 
         foreach ($select->getConnection()->fetchPairs($select) as $categoryId => $path) {
+            if (!is_string($path)) {
+                continue;
+            }
             $categoryId = (int)$categoryId;
             $path = explode('/', $path);
             $path = array_values($path);
