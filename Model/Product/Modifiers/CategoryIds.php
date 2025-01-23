@@ -47,6 +47,7 @@ class CategoryIds implements DataModifierInterface
             return;
         }
 
+        $product->setData('assigned_category_ids', $ids);
         $parentIds = $this->parentIdsProvider->getByIds($ids);
         $parentIds[] = array_keys($parentIds);
         $id = $this->getCategoryId($parentIds);

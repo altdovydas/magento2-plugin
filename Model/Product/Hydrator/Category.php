@@ -63,6 +63,10 @@ class Category implements ProductHydratorInterface
         $data['position'] = $this->getPosition($product);
         $data[SearchableAttributesProviderInterface::ATTRIBUTE_PREFIX . $categoriesWeight] = $data['categories'];
 
+        $categoriesHierarchy = $this->getCategoriesHierarchy($product);
+        $data['categories_hierarchy'] = $categoriesHierarchy;
+        $data['categories_last'] = $this->getCategoriesLast($categoriesHierarchy);
+
         return $data;
     }
 
@@ -94,6 +98,52 @@ class Category implements ProductHydratorInterface
         }
 
         return implode(self::HIERARCHICAL_SEPARATOR, array_filter($names));
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getCategoriesHierarchy(Product $product): array
+    {
+        $assignedCategoryIds = $product->getAssignedCategoryIds();
+        $catIds  = is_array($assignedCategoryIds) ? array_map('intval', $assignedCategoryIds) : [];
+        $storeId = $this->getStoreId($product);
+        $result = [];
+
+        foreach ($catIds as $catId) {
+            $ids = $this->parentIdsProvider->getById($catId);
+            $ids[] = $catId;
+            $names = [];
+            foreach ($ids as $id) {
+                $name = $this->categoriesProvider->getNameById($id, $storeId);
+                // skip category hierarchy if any of the parent categories are disabled
+                if (empty($name)) {
+                    break;
+                }
+                $names[] = $name;
+            }
+
+            if (!empty($names)) {
+                $result[] = implode(self::HIERARCHICAL_SEPARATOR, array_filter($names));
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getCategoriesLast(array $categoriesHierarchy): array
+    {
+        $result = [];
+
+        foreach ($categoriesHierarchy as $categoryHierarchy) {
+            $categories = explode(self::HIERARCHICAL_SEPARATOR, $categoryHierarchy);
+            $result[] = end($categories);
+        }
+
+        return $result;
     }
 
     /**
