@@ -7,6 +7,7 @@ namespace LupaSearch\LupaSearchPlugin\Model\Product\Hydrator;
 use LupaSearch\LupaSearchPlugin\Model\Hydrator\ProductHydratorInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Directory\Model\PriceCurrency;
+use Magento\Catalog\Helper\Data as CatalogHelper;
 
 class Price implements ProductHydratorInterface
 {
@@ -15,9 +16,15 @@ class Price implements ProductHydratorInterface
      */
     private $priceCurrency;
 
-    public function __construct(PriceCurrency $priceCurrency)
+    /**
+     * @var CatalogHelper
+     */
+    private $catalogHelper;
+
+    public function __construct(PriceCurrency $priceCurrency, CatalogHelper $catalogHelper)
     {
         $this->priceCurrency = $priceCurrency;
+        $this->catalogHelper = $catalogHelper;
     }
 
     /**
@@ -28,6 +35,12 @@ class Price implements ProductHydratorInterface
         $data = [];
         $data['price'] = $this->round((float)$product->getFinalPrice());
         $data['old_price'] = $this->round((float)$product->getPrice());
+        $data['price_with_tax'] = $this->round(
+            (float) $this->catalogHelper->getTaxPrice($product, $product->getFinalPrice(), true)
+        );
+        $data['old_price_with_tax'] = $this->round(
+            (float) $this->catalogHelper->getTaxPrice($product, $product->getPrice(), true)
+        );
         $data['discount'] = $this->getDiscount($product);
         $data['discount_percent'] = $this->getDiscountPercent($product);
 
