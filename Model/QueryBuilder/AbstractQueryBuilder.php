@@ -123,7 +123,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     }
 
     /**
-     * @return string[]
+     * @return OrderedMapInterface[]
      */
     protected function getSort(): array
     {
