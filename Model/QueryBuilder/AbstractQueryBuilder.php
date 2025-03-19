@@ -7,6 +7,7 @@ namespace LupaSearch\LupaSearchPlugin\Model\QueryBuilder;
 use LupaSearch\LupaSearchPlugin\Model\Provider\BoostProviderInterface;
 use LupaSearch\LupaSearchPluginCore\Api\Data\SearchQueries\OrderedMapInterface;
 use LupaSearch\LupaSearchPluginCore\Api\Data\SearchQueries\SearchQueryInterface;
+use LupaSearch\LupaSearchPluginCore\Factories\OrderedMapFactory;
 use LupaSearch\LupaSearchPluginCore\Factories\QueryConfigurationFactoryInterface;
 use LupaSearch\LupaSearchPluginCore\Factories\SearchQueryFactoryInterface;
 
@@ -60,11 +61,18 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
         $this->addQueryFields($searchQuery);
         $this->addSelectFields($searchQuery);
         $this->addFilterableFields($searchQuery);
+        $this->addBoost($searchQuery);
         $this->addFacets($searchQuery);
         $this->setLimit($searchQuery);
         $this->setSort($searchQuery);
 
         return $searchQuery;
+    }
+
+    protected function addBoost(SearchQueryInterface $searchQuery): void
+    {
+        $configuration = $searchQuery->getConfiguration();
+        $configuration->setBoost(OrderedMapFactory::create($this->boostProvider->getBoostFields()));
     }
 
     protected function addQueryFields(SearchQueryInterface $searchQuery): void
