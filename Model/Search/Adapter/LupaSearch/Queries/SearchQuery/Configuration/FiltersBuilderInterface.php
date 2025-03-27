@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SearchQuery\Configuration;
 
+use LupaSearch\LupaSearchPluginCore\Api\Data\SearchQueries\OrderedMapInterface;
 use Magento\Framework\Search\Request\Query\Filter;
 
 interface FiltersBuilderInterface
 {
     /**
      * @param Filter[] $filters
-     * @return array<string, array<string|float|bool|array<string>|null>>
      */
-    public function build(array $filters): array;
+    public function build(array $filters): OrderedMapInterface;
 }

@@ -572,6 +572,7 @@
             <argument name="commands" xsi:type="array">
                 <item name="lupasearch_clear_product_content_hashes" xsi:type="object">LupaSearch\LupaSearchPlugin\Console\Command\ClearProductContentHashes</item>
                 <item name="lupasearch_query_create" xsi:type="object">LupaSearch\LupaSearchPlugin\Console\Command\CreateQuery</item>
+                <item name="lupasearch_generate_suggestions" xsi:type="object">LupaSearch\LupaSearchPlugin\Console\Command\GenerateSuggestions</item>
                 <item name="lupasearch_reindex_store" xsi:type="object">LupaSearch\LupaSearchPlugin\Console\Command\ReindexStore</item>
                 <item name="lupasearch_reindex_product" xsi:type="object">LupaSearch\LupaSearchPlugin\Console\Command\ReindexProduct</item>
             </argument>

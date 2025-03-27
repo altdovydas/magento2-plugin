@@ -18,20 +18,11 @@ class CreateQuery extends Command
 {
     private const NAME = 'lupasearch:query:create';
 
-    /**
-     * @var State
-     */
-    protected $state;
+    private State $state;
 
-    /**
-     * @var QueryManagerInterface
-     */
-    protected $queryManager;
+    private QueryManagerInterface $queryManager;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+    private LoggerInterface $logger;
 
     public function __construct(
         QueryManagerInterface $queryManager,
@@ -52,7 +43,7 @@ class CreateQuery extends Command
 
         $this
             ->setName(self::NAME)
-            ->setDescription(__('Create query in LupaSearch')->getText())
+            ->setDescription((string)__('Create query in LupaSearch'))
             ->addArgument(
                 'type',
                 InputArgument::REQUIRED,
