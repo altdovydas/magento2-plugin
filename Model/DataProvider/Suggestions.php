@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LupaSearch\LupaSearchPlugin\Model\DataProvider;
 
 use LupaSearch\LupaSearchPlugin\Model\Config\Queries\ProductConfigInterface;
-use LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\QueriesInterface;
+use LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\QueryInterface as LupaSearchQueryInterface;
 use LupaSearch\LupaSearchPluginCore\Api\Data\SearchQueries\OrderedMapInterface;
 use Magento\AdvancedSearch\Model\SuggestedQueriesInterface;
 use Magento\Elasticsearch\Model\DataProvider\Base\GetSuggestionFrequencyInterface;
@@ -17,7 +17,7 @@ use function array_map;
 
 class Suggestions implements SuggestedQueriesInterface
 {
-    private QueriesInterface $queries;
+    private LupaSearchQueryInterface $query;
 
     private QueryResultFactory $queryResultFactory;
 
@@ -26,12 +26,12 @@ class Suggestions implements SuggestedQueriesInterface
     private GetSuggestionFrequencyInterface $getSuggestionFrequency;
 
     public function __construct(
-        QueriesInterface $queries,
+        LupaSearchQueryInterface $query,
         QueryResultFactory $queryResultFactory,
         ProductConfigInterface $productConfig,
         GetSuggestionFrequencyInterface $getSuggestionFrequency
     ) {
-        $this->queries = $queries;
+        $this->query = $query;
         $this->queryResultFactory = $queryResultFactory;
         $this->productConfig = $productConfig;
         $this->getSuggestionFrequency = $getSuggestionFrequency;
@@ -49,7 +49,7 @@ class Suggestions implements SuggestedQueriesInterface
         }
 
         $showResultCount = $this->productConfig->isResultsCountForEachSuggestionEnabled($storeId);
-        $suggestionResult = $this->queries->testSuggestion($query);
+        $suggestionResult = $this->query->suggestion($query);
 
         return array_map(
             function (OrderedMapInterface $item) use ($showResultCount) {

@@ -6,7 +6,6 @@ namespace LupaSearch\LupaSearchPlugin\Test\Unit\Model\Provider\Categories;
 
 use LupaSearch\LupaSearchPlugin\Model\Category\CollectionBuilder;
 use LupaSearch\LupaSearchPlugin\Model\Provider\Categories\ParentIdsProvider;
-use LupaSearch\LupaSearchPlugin\Model\Provider\Categories\RootIdsProviderInterface;
 use Magento\Catalog\Model\ResourceModel\Category\Collection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
@@ -15,42 +14,20 @@ use PHPUnit\Framework\TestCase;
 
 class ParentIdsProviderTest extends TestCase
 {
-    /**
-     * @var ParentIdsProvider
-     */
-    private $object;
+    private ParentIdsProvider $object;
 
-    /**
-     * @var MockObject
-     */
-    private $collectionBuilder;
+    private MockObject $collectionBuilder;
 
-    /**
-     * @var MockObject
-     */
-    private $rootIdsProvider;
+    private MockObject $collection;
 
-    /**
-     * @var MockObject
-     */
-    private $collection;
+    private MockObject $select;
 
-    /**
-     * @var MockObject
-     */
-    private $select;
-
-    /**
-     * @var MockObject
-     */
-    private $connection;
+    private MockObject $connection;
 
     public function testGetAll(): void
     {
         $expected = [
             6666 => [
-                6,
-                66,
                 666,
             ],
             1234 => [
@@ -74,8 +51,6 @@ class ParentIdsProviderTest extends TestCase
     {
         $expected = [
             6666 => [
-                6,
-                66,
                 666,
             ],
             1234 => [
@@ -98,8 +73,6 @@ class ParentIdsProviderTest extends TestCase
     public function testGetById(): void
     {
         $expected = [
-            6,
-            66,
             666,
         ];
         $rows = [
@@ -117,11 +90,10 @@ class ParentIdsProviderTest extends TestCase
     protected function setUp(): void
     {
         $this->collectionBuilder = $this->createMock(CollectionBuilder::class);
-        $this->rootIdsProvider = $this->createMock(RootIdsProviderInterface::class);
         $this->collection = $this->createMock(Collection::class);
         $this->select = $this->createMock(Select::class);
         $this->connection = $this->createMock(AdapterInterface::class);
-        $this->object = new ParentIdsProvider($this->collectionBuilder, $this->rootIdsProvider);
+        $this->object = new ParentIdsProvider($this->collectionBuilder);
 
         $this->collectionBuilder->expects(self::any())
             ->method('build')
@@ -134,9 +106,5 @@ class ParentIdsProviderTest extends TestCase
         $this->select->expects(self::any())
             ->method('getConnection')
             ->willReturn($this->connection);
-
-        $this->rootIdsProvider->expects(self::once())
-            ->method('get')
-            ->willReturn([1, 2]);
     }
 }
