@@ -105,7 +105,7 @@ class Category implements ProductHydratorInterface
      */
     private function getCategoriesHierarchy(Product $product): array
     {
-        $assignedCategoryIds = $product->getAssignedCategoryIds();
+        $assignedCategoryIds = $product->getData('assigned_category_ids');
         $catIds  = is_array($assignedCategoryIds) ? array_map('intval', $assignedCategoryIds) : [];
         $storeId = $this->getStoreId($product);
         $result = [];
@@ -166,12 +166,13 @@ class Category implements ProductHydratorInterface
      */
     private function getPosition(Product $product): array
     {
-        return array_map(
-            static function (int $id): string {
-                return 'category_' . $id;
-            },
-            $this->positionProvider->getByProductId((int)$product->getId()),
-        );
+        $positions = [];
+
+        foreach ($this->positionProvider->getByProductId((int)$product->getId()) as $id => $position) {
+            $positions['category_' . $id] = $position;
+        }
+
+        return $positions;
     }
 
     /**

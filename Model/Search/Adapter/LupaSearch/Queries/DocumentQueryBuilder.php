@@ -40,6 +40,7 @@ class DocumentQueryBuilder implements DocumentQueryBuilderInterface
         $documentQuery->setLimit(
             $request && $request->getSize() <= self::LIMIT_MAX ? (int)$request->getSize() : self::LIMIT_MAX
         );
+        $documentQuery->setOffset($request->getFrom());
 
         return $documentQuery;
     }

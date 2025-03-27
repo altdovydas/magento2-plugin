@@ -12,10 +12,7 @@ class Value implements SortBuilderInterface
 {
     private const FIELD_POSITION = 'position';
 
-    /**
-     * @var ValueBuilder
-     */
-    private $valueBuilder;
+    private ValueBuilder $valueBuilder;
 
     public function __construct(ValueBuilder $valueBuilder)
     {

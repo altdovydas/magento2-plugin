@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SearchQuery\Configuration;
 
 use LupaSearch\LupaSearchPlugin\Model\Provider\Attributes\AttributeMapperInterface;
+use LupaSearch\LupaSearchPluginCore\Api\Data\SearchQueries\OrderedMapInterface;
+use LupaSearch\LupaSearchPluginCore\Factories\OrderedMapFactory;
 
 class FiltersBuilder implements FiltersBuilderInterface
 {
@@ -23,7 +25,7 @@ class FiltersBuilder implements FiltersBuilderInterface
     /**
      * @inheritDoc
      */
-    public function build(array $filters): array
+    public function build(array $filters): OrderedMapInterface
     {
         $result = [];
 
@@ -33,6 +35,6 @@ class FiltersBuilder implements FiltersBuilderInterface
             $result[$field] = $this->filterValueProvider->get($reference);
         }
 
-        return $result;
+        return OrderedMapFactory::create($result);
     }
 }

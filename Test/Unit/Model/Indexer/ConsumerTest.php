@@ -9,47 +9,43 @@ use LupaSearch\LupaSearchPlugin\Model\Indexer\Consumer;
 use LupaSearch\LupaSearchPlugin\Model\Indexer\PartialIndexerInterface;
 use InvalidArgumentException;
 use LupaSearch\Exceptions\BadResponseException;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\AreaInterface;
+use Magento\Framework\App\AreaList;
 use Magento\Framework\MessageQueue\PublisherInterface;
+use Magento\Store\Model\App\Emulation;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class ConsumerTest extends TestCase
 {
-    /**
-     * @var Consumer
-     */
-    private $object;
 
-    /**
-     * @var PartialIndexerInterface|MockObject
-     */
-    private $partialIndexer;
+    private Consumer $object;
 
-    /**
-     * @var PublisherInterface|MockObject
-     */
-    private $publisher;
+    private MockObject $partialIndexer;
 
-    /**
-     * @var LoggerInterface|MockObject
-     */
-    private $logger;
+    private MockObject $publisher;
 
-    /**
-     * @var BatchInterface|MockObject
-     */
-    private $batch;
+    private MockObject $emulation;
 
-    /**
-     * @var string
-     */
-    private $topic = 'lupasearch.product.index';
+    private MockObject $areaList;
+
+    private MockObject $logger;
+
+    private MockObject $batch;
+
+    private string $topic = 'lupasearch.product.index';
 
     public function testProcess(): void
     {
         $ids = [1, 2, 3, 4];
         $storeId = 1;
+
+        $this->emulation
+            ->expects(self::once())
+            ->method('startEnvironmentEmulation')
+            ->with($storeId, Area::AREA_FRONTEND, true);
 
         $this->batch
             ->expects(self::once())
@@ -57,7 +53,7 @@ class ConsumerTest extends TestCase
             ->willReturn($ids);
 
         $this->batch
-            ->expects(self::once())
+            ->expects(self::atLeastOnce())
             ->method('getStoreId')
             ->willReturn($storeId);
 
@@ -78,13 +74,18 @@ class ConsumerTest extends TestCase
         $ids = [1, 2, 3, 4];
         $storeId = 1;
 
+        $this->emulation
+            ->expects(self::once())
+            ->method('startEnvironmentEmulation')
+            ->with($storeId, Area::AREA_FRONTEND, true);
+
         $this->batch
             ->expects(self::once())
             ->method('getIds')
             ->willReturn($ids);
 
         $this->batch
-            ->expects(self::once())
+            ->expects(self::atLeastOnce())
             ->method('getStoreId')
             ->willReturn($storeId);
 
@@ -111,13 +112,18 @@ class ConsumerTest extends TestCase
         $ids = [1, 2, 3, 4];
         $storeId = 1;
 
+        $this->emulation
+            ->expects(self::once())
+            ->method('startEnvironmentEmulation')
+            ->with($storeId, Area::AREA_FRONTEND, true);
+
         $this->batch
             ->expects(self::once())
             ->method('getIds')
             ->willReturn($ids);
 
         $this->batch
-            ->expects(self::once())
+            ->expects(self::atLeastOnce())
             ->method('getStoreId')
             ->willReturn($storeId);
 
@@ -145,14 +151,27 @@ class ConsumerTest extends TestCase
     {
         $this->partialIndexer = $this->createMock(PartialIndexerInterface::class);
         $this->publisher = $this->createMock(PublisherInterface::class);
+        $this->emulation = $this->createMock(Emulation::class);
+        $this->areaList = $this->createMock(AreaList::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->batch = $this->createMock(BatchInterface::class);
+
+        $area = $this->createMock(AreaInterface::class);
+        $area
+            ->method('load')
+            ->willReturnSelf();
+        $this->areaList
+            ->method('getArea')
+            ->with(Area::AREA_FRONTEND)
+            ->willReturn($area);
 
         $this->object = new Consumer(
             $this->partialIndexer,
             $this->publisher,
+            $this->emulation,
+            $this->areaList,
             $this->logger,
-            $this->topic,
+            $this->topic
         );
     }
 }
