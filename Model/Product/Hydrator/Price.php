@@ -32,9 +32,12 @@ class Price implements ProductHydratorInterface
      */
     public function extract(Product $product): array
     {
+        $type = $product->getTypeInstance();
+        $price = $type->isComposite($product) ? $product->getMinimalPrice() : $product->getPrice();
+
         $data = [];
         $data['price'] = $this->round((float)$product->getFinalPrice());
-        $data['old_price'] = $this->round((float)$product->getPrice());
+        $data['old_price'] = $this->round((float)$price);
         $data['price_with_tax'] = $this->round(
             (float) $this->catalogHelper->getTaxPrice($product, $product->getFinalPrice(), true)
         );
