@@ -3,6 +3,7 @@
     <module name="LupaSearch_LupaSearchPlugin">
         <sequence>
             <module name="Magento_Catalog"/>
+            <module name="Magento_ConfigurableProduct"/>
             <module name="LupaSearch_LupaSearchPluginCore"/>
         </sequence>
     </module>

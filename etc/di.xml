@@ -50,6 +50,7 @@
     <preference for="LupaSearch\LupaSearchPlugin\Model\QueryBuilder\FacetTypeProviderInterface" type="LupaSearch\LupaSearchPlugin\Model\QueryBuilder\FacetTypeProvider"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Hydrator\ProductHydratorInterface" type="LupaSearch\LupaSearchPlugin\Model\Product\Hydrator"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Hydrator\CategoryHydratorInterface" type="LupaSearch\LupaSearchPlugin\Model\Category\Hydrator"/>
+    <preference for="LupaSearch\LupaSearchPlugin\Model\Indexer\Product\IdListResolverInterface" type="LupaSearch\LupaSearchPlugin\Model\Indexer\Product\IdListWithParentResolver"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Normalizer\DateNormalizerInterface" type="LupaSearch\LupaSearchPlugin\Model\Normalizer\DateNormalizer"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Normalizer\HtmlNormalizerInterface" type="LupaSearch\LupaSearchPlugin\Model\Normalizer\HtmlNormalizer"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Normalizer\StringNormalizerInterface" type="LupaSearch\LupaSearchPlugin\Model\Normalizer\StringNormalizer"/>
