@@ -11,7 +11,7 @@ class DataModifier implements DataModifierInterface
     /**
      * @var DataModifierInterface[]
      */
-    private $modifiers;
+    private array $modifiers;
 
     /**
      * @param DataModifierInterface[] $modifiers

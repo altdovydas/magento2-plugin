@@ -19,6 +19,7 @@ class ProductsProvider extends BaseProductsProvider
 
         $collection = $this->createCollection($storeId);
         $collection->addAttributeToFilter('entity_id', ['in' => $ids]);
+        $this->dataModifier->modify($collection);
 
         return $collection;
     }
