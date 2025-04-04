@@ -31,6 +31,9 @@ class UrlRewrite implements ProductHydratorInterface
 
     private function getUrl(Product $product): string
     {
-        return $this->urlNormalizer->normalize((string)$product->getProductUrl());
+        $urlModel = $product->getUrlModel();
+        $url = (string)$urlModel->getUrl($product, ['_nosid' => true, '_ignore_category' => true]);
+
+        return $this->urlNormalizer->normalize($url);
     }
 }
