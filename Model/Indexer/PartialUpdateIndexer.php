@@ -45,7 +45,7 @@ class PartialUpdateIndexer implements PartialIndexerInterface
     public function reindex(array $ids, int $storeId): void
     {
         try {
-            $this->eventManager->dispatch('lupasearch_reindex_before', ['ids' => $ids, 'store_id' => $storeId]);
+            $this->eventManager->dispatch('lupasearch_partial_reindex_before', ['ids' => $ids, 'store_id' => $storeId]);
 
             if (empty($ids)) {
                 return;
@@ -66,7 +66,7 @@ class PartialUpdateIndexer implements PartialIndexerInterface
         } catch (Throwable $exception) {
             $this->logger->critical($exception->getMessage());
         } finally {
-            $this->eventManager->dispatch('lupasearch_reindex_after', ['ids' => $ids, 'store_id' => $storeId]);
+            $this->eventManager->dispatch('lupasearch_partial_reindex_before', ['ids' => $ids, 'store_id' => $storeId]);
         }
     }
 
