@@ -57,6 +57,11 @@ Enable cache
 bin/magento cache:enable lupasearch
 ```
 
+> 💡 **Before indexing, make sure your index mappings are already configured.**
+> If your product, category, or suggestion mappings do not exist yet, use the examples available here: https://github.com/lupasearch/magento2-plugin/tree/main/examples/mapping
+>
+> To update a mapping, use the mapping endpoints available in the LupaSearch API: https://console.lupasearch.com/docs/api#tag/Mapping
+
 ### 4. Configure the extension
 
 #### 4.1. Initial configurations
@@ -109,6 +114,22 @@ bin/magento queue:consumers:start lupasearch.all
 1. Log in to the [LupaSearch Console](https://console.lupasearch.com/login).
 2. Navigate to your product index.
 3. Verify that your products and categories are correctly indexed and available.
+
+## Adding Custom Product Attributes
+
+To add custom attributes to the product feed, follow these steps:
+
+1. Review existing Hydrators used in the plugin:
+   https://github.com/lupasearch/magento2-plugin/tree/main/Model/Product/Hydrator
+
+2. Create your own Hydrator class implementing the logic for your custom attribute.
+
+3. Register the new Hydrator in di.xml by adding it to the hydrator pool, for example:
+   https://github.com/lupasearch/magento2-plugin/blob/main/etc/di.xml#L476
+
+4. Go to your index mapping and add the new attribute field.
+
+5. Add the new attribute to your search query configuration.
 
 ## Support
 
