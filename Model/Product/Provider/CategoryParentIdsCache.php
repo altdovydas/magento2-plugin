@@ -12,15 +12,12 @@ use function array_intersect_key;
 
 class CategoryParentIdsCache implements ParentIdsProviderInterface, ProviderCacheInterface
 {
-    /**
-     * @var ParentIdsProviderInterface
-     */
-    private $parentIdsProvider;
+    private ParentIdsProviderInterface $parentIdsProvider;
 
     /**
      * @var int[][]
      */
-    private $parentIds = [];
+    private array $parentIds = [];
 
     public function __construct(ParentIdsProviderInterface $parentIdsProvider)
     {

@@ -50,6 +50,7 @@
     <preference for="LupaSearch\LupaSearchPlugin\Model\QueryBuilder\FacetTypeProviderInterface" type="LupaSearch\LupaSearchPlugin\Model\QueryBuilder\FacetTypeProvider"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Hydrator\ProductHydratorInterface" type="LupaSearch\LupaSearchPlugin\Model\Product\Hydrator"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Hydrator\CategoryHydratorInterface" type="LupaSearch\LupaSearchPlugin\Model\Category\Hydrator"/>
+    <preference for="LupaSearch\LupaSearchPlugin\Model\Indexer\Product\IdListResolverInterface" type="LupaSearch\LupaSearchPlugin\Model\Indexer\Product\IdListWithParentResolver"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Normalizer\DateNormalizerInterface" type="LupaSearch\LupaSearchPlugin\Model\Normalizer\DateNormalizer"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Normalizer\HtmlNormalizerInterface" type="LupaSearch\LupaSearchPlugin\Model\Normalizer\HtmlNormalizer"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Normalizer\StringNormalizerInterface" type="LupaSearch\LupaSearchPlugin\Model\Normalizer\StringNormalizer"/>
@@ -340,17 +341,6 @@
         </arguments>
     </type>
 
-    <type name="LupaSearch\LupaSearchPlugin\Model\Provider\ProviderCacheComposite">
-        <arguments>
-            <argument name="instances" xsi:type="array">
-                <item name="categories" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\CategoriesProvider</item>
-                <item name="category_parent_ids" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Provider\CategoryParentIdsCache</item>
-                <item name="category_position" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Categories\PositionProviderCache</item>
-                <item name="category_anchor" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Categories\AnchorProviderCache</item>
-            </argument>
-        </arguments>
-    </type>
-
     <type name="LupaSearch\LupaSearchPlugin\Model\Indexer\Product">
         <arguments>
             <argument name="full" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Indexer\Product\Action\Full</argument>
@@ -493,6 +483,14 @@
         </arguments>
     </type>
 
+    <type name="LupaSearch\LupaSearchPlugin\Model\Provider\Price\ProductsProvider">
+        <arguments>
+            <argument name="dataModifier" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Price\Data\Modifier</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="LupaSearch\LupaSearchPlugin\Model\Product\Price\Data\Modifier" type="LupaSearch\LupaSearchPlugin\Model\Provider\DataModifier"/>
+
     <virtualType name="LupaSearch\LupaSearchPlugin\Model\Product\ChildrenHydratorPool" type="LupaSearch\LupaSearchPlugin\Model\Product\HydratorPool">
         <arguments>
             <argument name="hydrators" xsi:type="array">
@@ -544,6 +542,7 @@
     <virtualType name="LupaSearch\LupaSearchPlugin\Model\Indexer\Price\DataGenerator" type="LupaSearch\LupaSearchPlugin\Model\Indexer\Product\DataGenerator">
         <arguments>
             <argument name="productHydrator" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Price\Hydrator</argument>
+            <argument name="productsProvider" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Price\ProductsProvider</argument>
         </arguments>
     </virtualType>
 
@@ -888,6 +887,50 @@
     <virtualType name="LupaSearch\LupaSearchPlugin\Model\Product\SuggestionsQueryBuilderProcessor" type="LupaSearch\LupaSearchPlugin\Model\QueryBuilder\QueryBuilderProcessor">
         <arguments>
             <argument name="queryBuilder" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\SuggestionsQueryBuilder</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="LupaSearch\LupaSearchPlugin\Model\Provider\Product\ProviderCacheComposite" type="LupaSearch\LupaSearchPlugin\Model\Provider\ProviderCacheComposite">
+        <arguments>
+            <argument name="instances" xsi:type="array">
+                <item name="categories" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\CategoriesProvider</item>
+                <item name="category_parent_ids" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Provider\CategoryParentIdsCache</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="LupaSearch\LupaSearchPlugin\Model\Provider\Price\ProviderCacheComposite" type="LupaSearch\LupaSearchPlugin\Model\Provider\ProviderCacheComposite">
+        <arguments>
+            <argument name="instances" xsi:type="array">
+                <item name="filterable_decimal_attributes_provider" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Attributes\FilterableDecimalAttributesProvider</item>
+                <item name="searchable_decimal_attributes_provider" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Attributes\SearchableDecimalAttributesProvider</item>
+                <item name="sortable_decimal_attributes_provider" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Attributes\SortableDecimalAttributesProvider</item>
+                <item name="attribute_value_provider" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Attributes\AttributeValueProvider</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="LupaSearch\LupaSearchPlugin\Observer\ReindexBefore">
+        <arguments>
+            <argument name="providerCache" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Product\ProviderCacheComposite</argument>
+        </arguments>
+    </type>
+
+    <type name="LupaSearch\LupaSearchPlugin\Observer\ReindexAfter">
+        <arguments>
+            <argument name="providerCache" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Product\ProviderCacheComposite</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="LupaSearch\LupaSearchPlugin\Observer\PartialReindexBefore" type="LupaSearch\LupaSearchPlugin\Observer\ReindexBefore">
+        <arguments>
+            <argument name="providerCache" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Price\ProviderCacheComposite</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="LupaSearch\LupaSearchPlugin\Observer\PartialReindexAfter" type="LupaSearch\LupaSearchPlugin\Observer\ReindexAfter">
+        <arguments>
+            <argument name="providerCache" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Price\ProviderCacheComposite</argument>
         </arguments>
     </virtualType>
 </config>

@@ -50,7 +50,7 @@ class FilterableAttributeValidator implements AttributeValidatorInterface
         }
 
         return
-            ('decimal' === $attribute->getBackendType() || $isDefaultFilterable ||
+            (in_array($attribute->getBackendType(), ['decimal', 'int'], true) || $isDefaultFilterable ||
                 in_array($attribute->getFrontendInput(), $this->allowedFrontendInputTypes, true)) &&
             !in_array($attribute->getAttributeCode(), $this->systemAttributeMap->getList(), true);
     }

@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace LupaSearch\LupaSearchPlugin\Model\Product\Attributes;
 
 use LupaSearch\LupaSearchPlugin\Model\Normalizer\StringNormalizerInterface;
+use LupaSearch\LupaSearchPlugin\Model\Provider\ProviderCacheInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 
 use function is_string;
 
-class AttributeValueProvider implements AttributeValueProviderInterface
+class AttributeValueProvider implements AttributeValueProviderInterface, ProviderCacheInterface
 {
     private StringNormalizerInterface $stringNormalizer;
+
+    /**
+     * @var string[]
+     */
+    private array $valueCache = [];
 
     public function __construct(StringNormalizerInterface $stringNormalizer)
     {
@@ -22,9 +28,14 @@ class AttributeValueProvider implements AttributeValueProviderInterface
     public function getValue(Product $product, AbstractAttribute $attribute): ?string
     {
         $attributeCode = $attribute->getAttributeCode();
+        $productData = $product->getData($attributeCode);
 
-        if (null === $product->getData($attributeCode)) {
+        if (null === $productData) {
             return null;
+        }
+
+        if (isset($this->valueCache[$attributeCode][$productData])) {
+            return $this->valueCache[$attributeCode][$productData];
         }
 
         $oldDataObject = $attribute->getDataObject();
@@ -36,6 +47,19 @@ class AttributeValueProvider implements AttributeValueProviderInterface
             return null;
         }
 
-        return $this->stringNormalizer->normalize($value);
+        return $this->valueCache[$attributeCode][$productData] = $this->stringNormalizer->normalize($value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function warmup(array $ids, ?int $storeId = null): void
+    {
+        // Not needed
+    }
+
+    public function flush(): void
+    {
+        $this->valueCache = [];
     }
 }

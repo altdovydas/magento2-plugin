@@ -17,7 +17,7 @@ class Stock implements ProductHydratorInterface
      */
     public function extract(Product $product): array
     {
-        $isSalable = (int)$product->isInStock();
+        $isSalable = (int)$product->isSalable();
 
         return [
             'stock_status' => $isSalable ? self::IN_STOCK : self::OUT_OF_STOCK,
