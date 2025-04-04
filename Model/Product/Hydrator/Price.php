@@ -60,7 +60,7 @@ class Price implements ProductHydratorInterface
         $discount = 100 - $product->getFinalPrice() * 100 / $product->getPrice();
         $discount = round($discount);
 
-        if ($discount < 10) {
+        if ($discount < 1) {
             return 0.00;
         }
 
