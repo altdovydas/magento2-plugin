@@ -70,7 +70,7 @@ class PartialUpdateIndexer implements PartialIndexerInterface
         } catch (Throwable $exception) {
             $this->logger->critical($exception->getMessage());
         } finally {
-            $this->eventManager->dispatch('lupasearch_partial_reindex_before', ['ids' => $ids, 'store_id' => $storeId]);
+            $this->eventManager->dispatch('lupasearch_partial_reindex_after', ['ids' => $ids, 'store_id' => $storeId]);
         }
     }
 
