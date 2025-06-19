@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LupaSearch\LupaSearchPlugin\Model\Indexer;
 
 use LupaSearch\LupaSearchPlugin\Model\Adapter\SearchEngineAdapterInterface;
+use LupaSearch\LupaSearchPlugin\Model\Indexer\Product\IdListResolverInterface;
 use LupaSearch\Exceptions\ApiException;
 use LupaSearch\Exceptions\BadResponseException;
 use LupaSearch\Handlers\ErrorHandlerInterface;
@@ -29,13 +30,15 @@ class PartialUpdateIndexer implements PartialIndexerInterface
         DataGeneratorInterface $dataGenerator,
         EventManager $eventManager,
         ErrorHandlerInterface $errorHandler,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        IdListResolverInterface $idListResolver
     ) {
         $this->searchEngineAdapter = $searchEngineAdapter;
         $this->dataGenerator = $dataGenerator;
         $this->eventManager = $eventManager;
         $this->errorHandler = $errorHandler;
         $this->logger = $logger;
+        $this->idListResolver = $idListResolver;
     }
 
     /**
@@ -45,12 +48,13 @@ class PartialUpdateIndexer implements PartialIndexerInterface
     public function reindex(array $ids, int $storeId): void
     {
         try {
-            $this->eventManager->dispatch('lupasearch_reindex_before', ['ids' => $ids, 'store_id' => $storeId]);
+            $this->eventManager->dispatch('lupasearch_partial_reindex_before', ['ids' => $ids, 'store_id' => $storeId]);
 
             if (empty($ids)) {
                 return;
             }
 
+            $ids = $this->idListResolver->resolve($ids);
             $this->searchEngineAdapter->setStoreId($storeId);
             $data = $this->dataGenerator->generate($ids, $storeId);
 
@@ -66,7 +70,7 @@ class PartialUpdateIndexer implements PartialIndexerInterface
         } catch (Throwable $exception) {
             $this->logger->critical($exception->getMessage());
         } finally {
-            $this->eventManager->dispatch('lupasearch_reindex_after', ['ids' => $ids, 'store_id' => $storeId]);
+            $this->eventManager->dispatch('lupasearch_partial_reindex_after', ['ids' => $ids, 'store_id' => $storeId]);
         }
     }
 
