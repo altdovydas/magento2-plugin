@@ -62,9 +62,9 @@ bin/magento cache:enable lupasearch
 >
 > To update a mapping, use the mapping endpoints available in the LupaSearch API: https://console.lupasearch.com/docs/api#tag/Mapping
 
-### 4. Configure the extension
+## Configure the extension
 
-#### 4.1. Initial configurations
+### 1. Initial configurations
 
 Navigate to **Stores -> Configuration -> Catalog -> LupaSearch** in your Magento admin panel.
 
@@ -78,14 +78,16 @@ Configure the following settings:
 
 Click **Save Config** to apply your changes.
 
-#### 4.2. Generate search configurations
+### 2. Generate search configurations
 
 After saving the initial settings, go to the **LupaSearch Queries Management** section in your Magento admin panel.
 Click the **Generate All Queries** button.
 A confirmation message, **"Queries successfully generated,"** will appear once the process is complete.
 To verify, go to the **Search Queries** page in the LupaSearch Dashboard and confirm that all queries are created successfully.
 
-### 5. Indexing
+## Synchronize data
+
+### 1. Indexing
 
 Reindex the data:
 
@@ -101,7 +103,7 @@ bin/magento indexer:reindex lupasearch_product
 bin/magento indexer:reindex lupasearch_category
 ```
 
-### 6. Run consumers
+### 2. Run consumers
 
 Start the LupaSearch queue consumers to process queued tasks:
 
@@ -109,7 +111,7 @@ Start the LupaSearch queue consumers to process queued tasks:
 bin/magento queue:consumers:start lupasearch.all
 ```
 
-### 7: Verify data
+### 3: Verify data
 
 1. Log in to the [LupaSearch Console](https://console.lupasearch.com/login).
 2. Navigate to your product index.
