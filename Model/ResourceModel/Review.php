@@ -4,51 +4,79 @@ declare(strict_types=1);
 
 namespace LupaSearch\LupaSearchPlugin\Model\ResourceModel;
 
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Catalog\Model\ResourceModel\Product\Collection;
+use Magento\Framework\DB\Sql\Expression;
+use Magento\Review\Model\ResourceModel\Review as BaseReview;
+use Magento\Review\Model\Review as ReviewModel;
 
-class Review
+/**
+ * @codeCoverageIgnore
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
+class Review extends BaseReview
 {
-    private const PRODUCT_ENTITY_TYPE = 1;
-    private const AGGREGATE_STORE_ID = 0;
-
-    private AdapterInterface $connection;
-
-    public function __construct(
-        ResourceConnection $resourceConnection,
-        string $resourceName = ResourceConnection::DEFAULT_CONNECTION
-    ) {
-        $this->connection = $resourceConnection->getConnection($resourceName);
-    }
-
     /**
      * @param int[] $productIds
-     * @return array<array{review_count: string, rating_summary: string}>
+     * @return array<string, string>
      */
-    public function getAttributeValuesByProductIds(array $productIds): array
+    public function getTotalReviewsByIds(array $productIds, ?bool $approvedOnly = false, ?int $storeId = 0): array
     {
         $connection = $this->getConnection();
 
-        $reviewValuesSelect = $connection->select()
+        if (false === $connection) {
+            return [];
+        }
+
+        $select = $connection->select();
+        $select
             ->from(
-                $connection->getTableName('review_entity_summary'),
-                ['entity_pk_value', 'reviews_count AS review_count', 'rating_summary'],
+                $this->_reviewTable,
+                [
+                    'entity_pk_value',
+                    'review_count' => new Expression('COUNT(*)'),
+                ],
             )
-            ->where('entity_pk_value IN (?)', $productIds)
-            ->where('store_id = ?', self::AGGREGATE_STORE_ID)
-            ->where('entity_type = ?', self::PRODUCT_ENTITY_TYPE);
+            ->where("{$this->_reviewTable}.entity_pk_value IN(?)", $productIds);
+        $bind = [];
 
-        $reviewValues = $connection->fetchAssoc($reviewValuesSelect);
+        if ($storeId > 0) {
+            $select->join(
+                ['store' => $this->_reviewStoreTable],
+                "{$this->_reviewTable}.review_id = store.review_id AND store.store_id = :store_id",
+                [],
+            );
+            $bind[':store_id'] = $storeId;
+        }
 
-        array_walk($reviewValues, static function (array &$reviewValue): void {
-            unset($reviewValue['entity_pk_value']);
-        });
+        if ($approvedOnly) {
+            $select->where("{$this->_reviewTable}.status_id = :status_id");
+            $bind[':status_id'] = ReviewModel::STATUS_APPROVED;
+        }
 
-        return $reviewValues;
+        $select->group("{$this->_reviewTable}.entity_pk_value");
+
+        return $connection->fetchPairs($select, $bind);
     }
 
-    protected function getConnection(): AdapterInterface
+    public function addRatingSummary(Collection $collection): void
     {
-        return $this->connection;
+        $cond = sprintf(
+            implode(
+                ' AND ',
+                [
+                    'review_entity_summary.entity_pk_value = e.entity_id',
+                    'review_entity_summary.entity_type = %d',
+                    'review_entity_summary.store_id = %d',
+                ],
+            ),
+            1,
+            $collection->getStoreId(),
+        );
+
+        $collection->getSelect()->joinLeft(
+            'review_entity_summary',
+            $cond,
+            ['rating_summary'],
+        );
     }
 }

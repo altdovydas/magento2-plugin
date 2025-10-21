@@ -4,6 +4,7 @@
         <sequence>
             <module name="Magento_Catalog"/>
             <module name="LupaSearch_LupaSearchPluginCore"/>
+            <module name="Magento_Review"/>
         </sequence>
     </module>
 </config>

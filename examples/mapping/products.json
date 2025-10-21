@@ -139,5 +139,11 @@
   },
   "position": {
     "type": "flattened"
+  },
+  "rating_summary": {
+    "type": "integer"
+  },
+  "review_count": {
+    "type": "integer"
   }
 }

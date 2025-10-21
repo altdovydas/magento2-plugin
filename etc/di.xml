@@ -347,7 +347,6 @@
                 <item name="category_parent_ids" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Provider\CategoryParentIdsCache</item>
                 <item name="category_position" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Categories\PositionProviderCache</item>
                 <item name="category_anchor" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Categories\AnchorProviderCache</item>
-                <item name="review" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Provider\ReviewProvider</item>
             </argument>
         </arguments>
     </type>
@@ -442,6 +441,8 @@
                 <item name="categories" xsi:type="string">categories</item>
                 <item name="category_id" xsi:type="string">category_id</item>
                 <item name="category_ids" xsi:type="string">category_ids</item>
+                <item name="rating_summary" xsi:type="string">rating_summary</item>
+                <item name="review_count" xsi:type="string">review_count</item>
             </argument>
             <argument name="filterableFields" xsi:type="array">
                 <item name="ep_boolean_*" xsi:type="string">ep_boolean_*</item>
@@ -490,6 +491,8 @@
         <arguments>
             <argument name="hydrators" xsi:type="array">
                 <item name="id" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\Id</item>
+                <item name="rating_summary" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\RatingSummary</item>
+                <item name="review_count" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\ReviewCount</item>
             </argument>
         </arguments>
     </type>
@@ -521,7 +524,6 @@
                 <item name="configurable" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\Configurable</item>
                 <item name="grouped" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\Grouped</item>
                 <item name="bundle" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\Bundle</item>
-                <item name="review" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\Review</item>
             </argument>
         </arguments>
     </virtualType>
@@ -692,6 +694,7 @@
                 <item name="bestsellers" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Modifiers\Bestsellers</item>
                 <item name="category_ids" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Modifiers\CategoryIds</item>
                 <item name="url_rewrites" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Modifiers\UrlRewrites</item>
+                <item name="review_count" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Modifiers\ReviewCountModifier</item>
             </argument>
         </arguments>
     </virtualType>
@@ -705,6 +708,7 @@
                 <item name="type" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Conditions\Type</item>
                 <item name="visible" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Conditions\Visible</item>
                 <item name="zeroPrice" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Conditions\ZeroPrice</item>
+                <item name="rating_summary" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Conditions\RatingSummary</item>
             </argument>
         </arguments>
     </virtualType>
