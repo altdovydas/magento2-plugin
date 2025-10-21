@@ -86,7 +86,10 @@
     "type": "keyword"
   },
   "image_url": {
-    "type": "keyword"
+    "type": "readonly"
+  },
+  "thumbnail_url": {
+    "type": "readonly"
   },
   "old_price": {
     "type": "float"

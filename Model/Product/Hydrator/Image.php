@@ -18,18 +18,19 @@ class Image implements ProductHydratorInterface
      */
     public function extract(Product $product): array
     {
-        $imageUrl = $this->getImageUrl($product);
+        $imageUrl = $this->getMediaUrl($product->getImage());
+        $thumbnailUrl = $this->getMediaUrl($product->getThumbnail());
+
         $data = [];
         $data['has_images'] = null !== $imageUrl;
         $data['image_url'] = $imageUrl;
+        $data['thumbnail_url'] = $thumbnailUrl;
 
         return $data;
     }
 
-    private function getImageUrl(Product $product): ?string
+    private function getMediaUrl(?string $url): ?string
     {
-        $url = $product->getImage();
-
         if (empty($url) || self::NOT_SELECTED_IMAGE === $url) {
             return null;
         }
