@@ -1,6 +1,6 @@
 {
     "name": "lupasearch/magento2-lupasearch-plugin",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "LupaSearch module",
     "type": "magento2-module",
     "config": {
