@@ -24,44 +24,25 @@ use const PHP_EOL;
 abstract class AbstractAction
 {
     /**
-     * @var SearchEngineAdapterInterface
+     * Delete queries batch size
      */
-    private $searchEngineAdapter;
+    private const DELETE_BATCH_SIZE = 10000;
 
-    /**
-     * @var StoreManagerInterface
-     */
-    private $storeManager;
+    private SearchEngineAdapterInterface $searchEngineAdapter;
 
-    /**
-     * @var IndexConfigInterface
-     */
-    private $indexConfig;
+    private StoreManagerInterface $storeManager;
 
-    /**
-     * @var PublisherInterface
-     */
-    private $publisher;
+    private IndexConfigInterface $indexConfig;
 
-    /**
-     * @var DataProviderInterface
-     */
-    private $dataProvider;
+    private PublisherInterface $publisher;
 
-    /**
-     * @var BatchInterfaceFactory
-     */
-    private $batchFactory;
+    private DataProviderInterface $dataProvider;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private BatchInterfaceFactory $batchFactory;
 
-    /**
-     * @var string
-     */
-    private $topic = '';
+    private LoggerInterface $logger;
+
+    private string $topic = '';
 
     public function __construct(
         SearchEngineAdapterInterface $searchEngineAdapter,
@@ -174,11 +155,13 @@ abstract class AbstractAction
      */
     private function deleteIndexes(int $storeId, array $ids): void
     {
-        try {
-            $this->searchEngineAdapter->setStoreId($storeId);
-            $this->searchEngineAdapter->deleteDocuments($ids);
-        } catch (Throwable $exception) {
-            $this->logger->error($exception->getMessage());
+        foreach (array_chunk($ids, self::DELETE_BATCH_SIZE) as $documentIds) {
+            try {
+                $this->searchEngineAdapter->setStoreId($storeId);
+                $this->searchEngineAdapter->deleteDocuments($documentIds);
+            } catch (Throwable $exception) {
+                $this->logger->error($exception->getMessage());
+            }
         }
     }
 }
