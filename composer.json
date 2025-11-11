@@ -18,6 +18,7 @@
         "magento/module-inventory-sales-api": "*",
         "magento/module-eav": "*",
         "magento/module-catalog": "*",
+        "magento/module-catalog-url-rewrite": "*",
         "magento/module-config": "*",
         "magento/module-cron": "*",
         "magento/module-store": "*",
