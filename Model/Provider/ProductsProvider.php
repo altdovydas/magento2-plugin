@@ -13,15 +13,9 @@ use Traversable;
 
 class ProductsProvider implements ProductsProviderInterface
 {
-    /**
-     * @var CollectionBuilder
-     */
-    private $collectionBuilder;
+    protected CollectionBuilder $collectionBuilder;
 
-    /**
-     * @var DataModifierInterface
-     */
-    private $dataModifier;
+    private DataModifierInterface $dataModifier;
 
     public function __construct(CollectionBuilder $collectionBuilder, DataModifierInterface $dataModifier)
     {

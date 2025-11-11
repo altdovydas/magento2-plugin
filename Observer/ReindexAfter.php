@@ -10,10 +10,7 @@ use Magento\Framework\Event\ObserverInterface;
 
 class ReindexAfter implements ObserverInterface
 {
-    /**
-     * @var ProviderCacheInterface
-     */
-    private $providerCache;
+    private ProviderCacheInterface $providerCache;
 
     public function __construct(ProviderCacheInterface $providerCache)
     {

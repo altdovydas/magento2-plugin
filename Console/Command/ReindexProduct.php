@@ -102,6 +102,7 @@ class ReindexProduct extends Command
     private function getIds(InputInterface $input): array
     {
         $collection = $this->collectionBuilder->build($this->getStoreId($input));
+        $collection->removeAllFieldsFromSelect();
         $collection->addAttributeToFilter('sku', ['like' => $this->getSku($input)]);
 
         return array_map('intval', $collection->getAllIds());

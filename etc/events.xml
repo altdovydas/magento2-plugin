@@ -9,4 +9,10 @@
     <event name="lupasearch_reindex_after">
         <observer name="LupaSearch_LupaSearchPlugin_ReindexAfter" instance="LupaSearch\LupaSearchPlugin\Observer\ReindexAfter"/>
     </event>
+    <event name="lupasearch_partial_reindex_before">
+        <observer name="LupaSearch_LupaSearchPlugin_ReindexBefore" instance="LupaSearch\LupaSearchPlugin\Observer\PartialReindexBefore"/>
+    </event>
+    <event name="lupasearch_partial_reindex_after">
+        <observer name="LupaSearch_LupaSearchPlugin_ReindexAfter" instance="LupaSearch\LupaSearchPlugin\Observer\PartialReindexAfter"/>
+    </event>
 </config>
