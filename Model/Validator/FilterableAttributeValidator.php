@@ -30,6 +30,14 @@ class FilterableAttributeValidator implements AttributeValidatorInterface
         ProductInterface::STATUS,
     ];
 
+    /**
+     * @var string[]
+     */
+    private array $filterableBackendTypes = [
+        'decimal',
+        'int'
+    ];
+
     private SystemAttributeMapInterface $systemAttributeMap;
 
     public function __construct(SystemAttributeMapInterface $systemAttributeMap)
@@ -50,7 +58,7 @@ class FilterableAttributeValidator implements AttributeValidatorInterface
         }
 
         return
-            ('decimal' === $attribute->getBackendType() || $isDefaultFilterable ||
+            (in_array($attribute->getBackendType(), $this->filterableBackendTypes, true) || $isDefaultFilterable ||
                 in_array($attribute->getFrontendInput(), $this->allowedFrontendInputTypes, true)) &&
             !in_array($attribute->getAttributeCode(), $this->systemAttributeMap->getList(), true);
     }
