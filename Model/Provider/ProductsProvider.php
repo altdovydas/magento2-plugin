@@ -15,7 +15,7 @@ class ProductsProvider implements ProductsProviderInterface
 {
     protected CollectionBuilder $collectionBuilder;
 
-    private DataModifierInterface $dataModifier;
+    protected DataModifierInterface $dataModifier;
 
     public function __construct(CollectionBuilder $collectionBuilder, DataModifierInterface $dataModifier)
     {
