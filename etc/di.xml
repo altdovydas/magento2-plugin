@@ -564,6 +564,12 @@
         </arguments>
     </virtualType>
 
+    <type name="LupaSearch\LupaSearchPlugin\Model\Provider\Price\ProductsProvider">
+        <arguments>
+            <argument name="dataModifier" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Price\Data\Modifier</argument>
+        </arguments>
+    </type>
+
     <type name="LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\Category">
         <arguments>
             <argument name="parentIdsProvider" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Provider\CategoryParentIdsCache</argument>
@@ -711,6 +717,8 @@
             </argument>
         </arguments>
     </virtualType>
+
+    <virtualType name="LupaSearch\LupaSearchPlugin\Model\Product\Price\Data\Modifier" type="LupaSearch\LupaSearchPlugin\Model\Provider\DataModifier"/>
 
     <virtualType name="LupaSearch\LupaSearchPlugin\Model\Product\CollectionModifier" type="Magento\Framework\Data\CollectionModifier">
         <arguments>
