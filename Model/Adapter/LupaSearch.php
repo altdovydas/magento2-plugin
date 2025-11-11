@@ -26,7 +26,10 @@ use function var_export;
 
 class LupaSearch implements SearchEngineAdapterInterface
 {
-    public const MAX_RESULTS_LIMIT = 1000;
+    /**
+     * LupaSearch API result limit
+     */
+    public const MAX_RESULTS_LIMIT = 10000;
 
     /**
      * @var DocumentsApiInterface[]
