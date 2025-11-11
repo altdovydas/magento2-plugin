@@ -4,6 +4,7 @@
         <sequence>
             <module name="Magento_Catalog"/>
             <module name="Magento_CatalogUrlRewrite"/>
+            <module name="Magento_ConfigurableProduct"/>
             <module name="LupaSearch_LupaSearchPluginCore"/>
             <module name="Magento_Review"/>
         </sequence>

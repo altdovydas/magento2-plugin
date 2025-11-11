@@ -20,6 +20,7 @@
         "magento/module-catalog": "*",
         "magento/module-catalog-url-rewrite": "*",
         "magento/module-config": "*",
+        "magento/module-configurable-product": "*",
         "magento/module-cron": "*",
         "magento/module-store": "*",
         "magento/module-search": "*",
