@@ -10,15 +10,9 @@ use LupaSearch\LupaSearchPlugin\Model\Provider\ProductsProviderInterface;
 
 class DataGenerator implements DataGeneratorInterface
 {
-    /**
-     * @var ProductsProviderInterface
-     */
-    protected $productsProvider;
+    protected ProductsProviderInterface $productsProvider;
 
-    /**
-     * @var ProductHydratorInterface
-     */
-    protected $productHydrator;
+    protected ProductHydratorInterface $productHydrator;
 
     public function __construct(ProductsProviderInterface $productsProvider, ProductHydratorInterface $productHydrator)
     {

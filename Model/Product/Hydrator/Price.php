@@ -9,23 +9,24 @@ use Magento\Catalog\Model\Product;
 use Magento\Directory\Model\PriceCurrency;
 use Magento\Catalog\Helper\Data as CatalogHelper;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use Magento\Framework\Math\FloatComparator;
 
 class Price implements ProductHydratorInterface
 {
-    /**
-     * @var PriceCurrency
-     */
-    private $priceCurrency;
+    private PriceCurrency $priceCurrency;
 
-    /**
-     * @var CatalogHelper
-     */
-    private $catalogHelper;
+    private CatalogHelper $catalogHelper;
 
-    public function __construct(PriceCurrency $priceCurrency, CatalogHelper $catalogHelper)
-    {
+    private FloatComparator $floatComparator;
+
+    public function __construct(
+        PriceCurrency $priceCurrency,
+        CatalogHelper $catalogHelper,
+        FloatComparator $floatComparator
+    ) {
         $this->priceCurrency = $priceCurrency;
         $this->catalogHelper = $catalogHelper;
+        $this->floatComparator = $floatComparator;
     }
 
     /**
@@ -71,51 +72,55 @@ class Price implements ProductHydratorInterface
 
     protected function buildProductData(Product $product): array
     {
+        $type = $product->getTypeInstance();
+        $price = $type->isComposite($product) ? (float)$product->getMinimalPrice() : (float)$product->getPrice();
+        $finalPrice = (float)$product->getFinalPrice();
+
         return [
-            'price' => $this->round((float)$product->getFinalPrice()),
-            'old_price' => $this->round((float)$product->getPrice()),
+            'price' => $this->round($finalPrice),
+            'old_price' => $this->round($price),
             'price_with_tax' => $this->round(
-                (float)$this->catalogHelper->getTaxPrice($product, $product->getFinalPrice(), true)
+                (float)$this->catalogHelper->getTaxPrice($product, $finalPrice, true)
             ),
             'old_price_with_tax' => $this->round(
-                (float)$this->catalogHelper->getTaxPrice($product, $product->getPrice(), true)
+                (float)$this->catalogHelper->getTaxPrice($product, $price, true)
             ),
-            'discount' => $this->getDiscount($product),
-            'discount_percent' => $this->getDiscountPercent($product),
+            'discount' => $this->getDiscount($price, $finalPrice),
+            'discount_percent' => $this->getDiscountPercent($price, $finalPrice),
         ];
     }
 
-    protected function getDiscountPercent(Product $product): float
+    protected function getDiscountPercent(float $price, float $finalPrice): float
     {
         if (
-            $product->getFinalPrice() <= 0 ||
-            $product->getPrice() <= 0 ||
-            $product->getFinalPrice() >= $product->getPrice()
+            $this->floatComparator->greaterThanOrEqual(0, $finalPrice) ||
+            $this->floatComparator->greaterThanOrEqual(0, $price) ||
+            $this->floatComparator->greaterThanOrEqual($finalPrice, $price)
         ) {
             return 0.00;
         }
 
-        $discount = 100 - $product->getFinalPrice() * 100 / $product->getPrice();
+        $discount = 100 - $finalPrice * 100 / $price;
         $discount = round($discount);
 
-        if ($discount < 10) {
+        if ($discount < 1) {
             return 0.00;
         }
 
         return $discount;
     }
 
-    protected function getDiscount(Product $product): float
+    protected function getDiscount(float $price, float $finalPrice): float
     {
         if (
-            $product->getFinalPrice() <= 0 ||
-            $product->getPrice() <= 0 ||
-            $product->getFinalPrice() >= $product->getPrice()
+            $this->floatComparator->greaterThanOrEqual(0, $finalPrice) ||
+            $this->floatComparator->greaterThanOrEqual(0, $price) ||
+            $this->floatComparator->greaterThanOrEqual($finalPrice, $price)
         ) {
             return 0.00;
         }
 
-        return $this->round(abs($product->getFinalPrice() - $product->getPrice())) * -1;
+        return $this->round(abs($finalPrice - $price)) * -1;
     }
 
     protected function round(float $price): float
