@@ -6,6 +6,7 @@ namespace LupaSearch\LupaSearchPlugin\Model\Indexer;
 
 use LupaSearch\LupaSearchPlugin\Model\Adapter\SearchEngineAdapterInterface;
 use LupaSearch\LupaSearchPlugin\Model\Filter\DataFilterInterface;
+use LupaSearch\LupaSearchPlugin\Model\Indexer\Product\IdListResolverInterface;
 use LupaSearch\LupaSearchPlugin\Model\ResourceModel\DeleteProductHashes;
 use Exception;
 use LupaSearch\Exceptions\ApiException;
@@ -32,6 +33,8 @@ class PartialIndexer implements PartialIndexerInterface
 
     private DeleteProductHashes $deleteProductHashes;
 
+    private IdListResolverInterface $idListResolver;
+
     private ?DataFilterInterface $dataFilter;
 
     public function __construct(
@@ -41,6 +44,7 @@ class PartialIndexer implements PartialIndexerInterface
         ErrorHandlerInterface $errorHandler,
         LoggerInterface $logger,
         DeleteProductHashes $deleteProductHashes,
+        IdListResolverInterface $idListResolver,
         ?DataFilterInterface $dataFilter = null
     ) {
         $this->searchEngineAdapter = $searchEngineAdapter;
@@ -49,6 +53,7 @@ class PartialIndexer implements PartialIndexerInterface
         $this->errorHandler = $errorHandler;
         $this->logger = $logger;
         $this->deleteProductHashes = $deleteProductHashes;
+        $this->idListResolver = $idListResolver;
         $this->dataFilter = $dataFilter;
     }
 
@@ -65,6 +70,7 @@ class PartialIndexer implements PartialIndexerInterface
                 return;
             }
 
+            $ids = $this->idListResolver->resolve($ids);
             $this->searchEngineAdapter->setStoreId($storeId);
 
             $data = $this->dataGenerator->generate($ids, $storeId);

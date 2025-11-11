@@ -59,7 +59,16 @@
     <preference for="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SearchQueryBuilderInterface" type="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SearchQueryBuilder"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\QueriesInterface" type="LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries"/>
     <preference for="LupaSearch\LupaSearchPlugin\Model\SuggestionsGeneratorInterface" type="LupaSearch\LupaSearchPlugin\Model\SuggestionsGenerator"/>
+    <preference for="LupaSearch\LupaSearchPlugin\Model\Indexer\Product\IdListResolverInterface" type="LupaSearch\LupaSearchPlugin\Model\Indexer\Product\IdListResolverComposite"/>
     <preference for="Magento\Setup\Model\SearchConfigOptionsList" type="LupaSearch\LupaSearchPlugin\Setup\SearchConfigOptionsList"/>
+
+    <type name="LupaSearch\LupaSearchPlugin\Model\Indexer\Product\IdListResolverComposite">
+        <arguments>
+            <argument name="resolvers" xsi:type="array">
+                <item name="configurable" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Indexer\Product\IdListResolver\ConfigurableResolver</item>
+            </argument>
+        </arguments>
+    </type>
 
     <type name="LupaSearch\LupaSearchPlugin\Model\Config\QueriesConfigPool">
         <arguments>
