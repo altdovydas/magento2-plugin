@@ -8,6 +8,7 @@ use LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SearchQu
 use LupaSearch\LupaSearchPluginCore\Api\Data\SearchQueries\DocumentQueryInterface;
 use LupaSearch\LupaSearchPluginCore\Api\Data\SearchQueries\DocumentQueryInterfaceFactory as DocumentQueryFactory;
 use LupaSearch\LupaSearchPlugin\Model\Search\Adapter\LupaSearch\Queries\SearchQuery\Configuration\SortBuilderInterface;
+use Magento\Framework\Search\Request\Query\MatchQuery;
 use Magento\Framework\Search\RequestInterface;
 
 class DocumentQueryBuilder implements DocumentQueryBuilderInterface
@@ -35,6 +36,7 @@ class DocumentQueryBuilder implements DocumentQueryBuilderInterface
         $filters = $this->filtersBuilder->build($request->getQuery()->getMust());
 
         $documentQuery = $this->documentQueryFactory->create();
+        $documentQuery->setSearchText($this->getSearchText($request));
         $documentQuery->setSort($this->sortBuilder->build($request));
         $documentQuery->setFilters($filters);
         $documentQuery->setLimit(
@@ -43,5 +45,17 @@ class DocumentQueryBuilder implements DocumentQueryBuilderInterface
         $documentQuery->setOffset($request->getFrom());
 
         return $documentQuery;
+    }
+
+    private function getSearchText(?RequestInterface $request = null): string
+    {
+        if (null === $request) {
+            return '';
+        }
+
+        $matchQueries = $request->getQuery()->getShould();
+        $searchText = $matchQueries['search'] ?? null;
+
+        return !$searchText instanceof MatchQuery ? '' : $searchText->getValue();
     }
 }
