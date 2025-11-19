@@ -38,17 +38,17 @@ class LupaSearchCache implements SearchEngineAdapterInterface
     /**
      * @inheritDoc
      */
-    public function addDocuments(array $documents): void
+    public function addDocuments(array $documents): string
     {
-        $this->searchEngineAdapter->addDocuments($documents);
+        return $this->searchEngineAdapter->addDocuments($documents);
     }
 
     /**
      * @inheritDoc
      */
-    public function updateDocuments(array $documents): void
+    public function updateDocuments(array $documents): string
     {
-        $this->searchEngineAdapter->updateDocuments($documents);
+        return $this->searchEngineAdapter->updateDocuments($documents);
     }
 
     /**
