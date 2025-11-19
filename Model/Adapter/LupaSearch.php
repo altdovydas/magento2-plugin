@@ -32,6 +32,7 @@ class LupaSearch implements SearchEngineAdapterInterface
      * LupaSearch API result limit
      */
     public const MAX_RESULTS_LIMIT = 10000;
+    private const KEY_BATCH_KEY = 'batchKey';
 
     /**
      * @var DocumentsApiInterface[]
@@ -93,10 +94,10 @@ class LupaSearch implements SearchEngineAdapterInterface
     /**
      * @inheritDoc
      */
-    public function addDocuments(array $documents): void
+    public function addDocuments(array $documents): string
     {
         if (!$documents || !$this->getIndexId()) {
-            return;
+            return '';
         }
 
         try {
@@ -116,15 +117,17 @@ class LupaSearch implements SearchEngineAdapterInterface
         }
 
         $this->validateResponse($response);
+
+        return (string)$response[self::KEY_BATCH_KEY];
     }
 
     /**
      * @inheritDoc
      */
-    public function updateDocuments(array $documents): void
+    public function updateDocuments(array $documents): string
     {
         if (!$documents || !$this->getIndexId()) {
-            return;
+            return '';
         }
 
         try {
@@ -144,6 +147,8 @@ class LupaSearch implements SearchEngineAdapterInterface
         }
 
         $this->validateResponse($response);
+
+        return (string)$response[self::KEY_BATCH_KEY];
     }
 
     /**
@@ -286,7 +291,7 @@ class LupaSearch implements SearchEngineAdapterInterface
             throw new BadResponseException('Unsuccessful');
         }
 
-        $batchKey = (string)($response['batchKey'] ?? '');
+        $batchKey = (string)($response[self::KEY_BATCH_KEY] ?? '');
 
         if (!$batchKey) {
             throw new BadResponseException('Empty batchKey');

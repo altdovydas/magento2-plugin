@@ -22,13 +22,13 @@ interface SearchEngineAdapterInterface
      * @param array<string|int|float|array<string>> $documents
      * @throws BadResponseException
      */
-    public function addDocuments(array $documents): void;
+    public function addDocuments(array $documents): string;
 
     /**
      * @param array<string|int|float|array<string>> $documents
      * @throws BadResponseException
      */
-    public function updateDocuments(array $documents): void;
+    public function updateDocuments(array $documents): string;
 
     /**
      * @param string[] $primaryKeys
