@@ -44,6 +44,8 @@ class PartialUpdateIndexer implements PartialIndexerInterface
      */
     public function reindex(array $ids, int $storeId): void
     {
+        $batchKey = null;
+        
         try {
             $this->eventManager->dispatch('lupasearch_partial_reindex_before', ['ids' => $ids, 'store_id' => $storeId]);
 
@@ -58,7 +60,7 @@ class PartialUpdateIndexer implements PartialIndexerInterface
                 return;
             }
 
-            $this->updateData($data);
+            $batchKey = $this->updateData($data);
         } catch (BadResponseException $exception) {
             $this->logger->alert($exception->getMessage());
 
@@ -66,7 +68,10 @@ class PartialUpdateIndexer implements PartialIndexerInterface
         } catch (Throwable $exception) {
             $this->logger->critical($exception->getMessage());
         } finally {
-            $this->eventManager->dispatch('lupasearch_partial_reindex_after', ['ids' => $ids, 'store_id' => $storeId]);
+            $this->eventManager->dispatch(
+                'lupasearch_partial_reindex_after',
+                ['ids' => $ids, 'store_id' => $storeId, 'batch_key' => $batchKey]
+            );
         }
     }
 
@@ -74,12 +79,14 @@ class PartialUpdateIndexer implements PartialIndexerInterface
      * @param array<string|int|float|array<string>> $data
      * @throws ApiException
      */
-    protected function updateData(array $data): void
+    protected function updateData(array $data): string
     {
         try {
-            $this->searchEngineAdapter->updateDocuments($data);
+            return $this->searchEngineAdapter->updateDocuments($data);
         } catch (Throwable $exception) {
             $this->errorHandler->handle($exception);
         }
+
+        return '';
     }
 }
