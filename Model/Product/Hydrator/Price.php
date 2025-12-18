@@ -8,6 +8,7 @@ use LupaSearch\LupaSearchPlugin\Model\Hydrator\ProductHydratorInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Directory\Model\PriceCurrency;
 use Magento\Catalog\Helper\Data as CatalogHelper;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 
 class Price implements ProductHydratorInterface
 {
@@ -32,19 +33,56 @@ class Price implements ProductHydratorInterface
      */
     public function extract(Product $product): array
     {
-        $data = [];
-        $data['price'] = $this->round((float)$product->getFinalPrice());
-        $data['old_price'] = $this->round((float)$product->getPrice());
-        $data['price_with_tax'] = $this->round(
-            (float) $this->catalogHelper->getTaxPrice($product, $product->getFinalPrice(), true)
-        );
-        $data['old_price_with_tax'] = $this->round(
-            (float) $this->catalogHelper->getTaxPrice($product, $product->getPrice(), true)
-        );
-        $data['discount'] = $this->getDiscount($product);
-        $data['discount_percent'] = $this->getDiscountPercent($product);
+        if ($product->getTypeId() === Configurable::TYPE_CODE) {
+            return $this->extractConfigurableProductData($product);
+        }
 
-        return $data;
+        return $this->buildProductData($product);
+    }
+
+    protected function extractConfigurableProductData(Product $product): array
+    {
+        $lowestPriceProduct = $this->getLowestPriceProduct($product);
+
+        if (!$lowestPriceProduct) {
+            return [];
+        }
+
+        return $this->buildProductData($lowestPriceProduct);
+    }
+
+    protected function getLowestPriceProduct(Product $product): ?Product
+    {
+        $typeInstance = $product->getTypeInstance();
+        $usedProducts = $typeInstance->getUsedProducts($product);
+
+        $lowestPriceProduct = null;
+        foreach ($usedProducts as $usedProduct) {
+            if (
+                $lowestPriceProduct === null ||
+                $usedProduct->getFinalPrice() < $lowestPriceProduct->getFinalPrice()
+            ) {
+                $lowestPriceProduct = $usedProduct;
+            }
+        }
+
+        return $lowestPriceProduct;
+    }
+
+    protected function buildProductData(Product $product): array
+    {
+        return [
+            'price' => $this->round((float)$product->getFinalPrice()),
+            'old_price' => $this->round((float)$product->getPrice()),
+            'price_with_tax' => $this->round(
+                (float)$this->catalogHelper->getTaxPrice($product, $product->getFinalPrice(), true)
+            ),
+            'old_price_with_tax' => $this->round(
+                (float)$this->catalogHelper->getTaxPrice($product, $product->getPrice(), true)
+            ),
+            'discount' => $this->getDiscount($product),
+            'discount_percent' => $this->getDiscountPercent($product),
+        ];
     }
 
     protected function getDiscountPercent(Product $product): float
