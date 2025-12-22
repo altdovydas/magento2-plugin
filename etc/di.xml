@@ -383,6 +383,18 @@
         </arguments>
     </type>
 
+    <type name="LupaSearch\LupaSearchPlugin\Model\Adapter\LupaSearch">
+        <arguments>
+            <argument name="logger" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Indexer\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="LupaSearch\LupaSearchPlugin\Model\SuggestionsGenerator">
+        <arguments>
+            <argument name="logger" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Indexer\Logger</argument>
+        </arguments>
+    </type>
+
     <type name="LupaSearch\LupaSearchPlugin\Model\Adapter\QueriesManagementPool">
         <arguments>
             <argument name="pool" xsi:type="array">

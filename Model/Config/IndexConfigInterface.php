@@ -9,4 +9,6 @@ interface IndexConfigInterface
     public function isEnabled(?int $storeId = null): bool;
 
     public function getBatchSize(): int;
+
+    public function shouldIncludeIndexingLogs(): bool;
 }

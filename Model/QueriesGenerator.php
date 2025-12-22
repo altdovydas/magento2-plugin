@@ -78,6 +78,9 @@ class QueriesGenerator implements QueriesGeneratorInterface
         foreach ($this->types as $type) {
             try {
                 $this->queryManager->generate($type, $storeId);
+                $this->logger->info(
+                    sprintf('Successfully generated queries of type "%s" for store ID %d.', $type, $storeId)
+                );
             } catch (Throwable $exception) {
                 $this->logger->error($exception->getMessage() . PHP_EOL . $exception->getTraceAsString());
             }
@@ -95,6 +98,9 @@ class QueriesGenerator implements QueriesGeneratorInterface
             $storeId = (int)$store->getId();
 
             if (!$store->getIsActive() || !$this->indexConfig->isEnabled($storeId)) {
+                $this->logger->info(
+                    sprintf('Skipping queries generation for store ID %d as it is inactive or indexing is disabled.', $storeId)
+                );
                 continue;
             }
 

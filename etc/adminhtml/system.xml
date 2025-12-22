@@ -31,6 +31,11 @@
                     <validate>required-entry validate-digits</validate>
                     <comment>Max. 10000</comment>
                 </field>
+                <field id="include_indexing_logs" translate="label comment" type="select" sortOrder="25" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Include Indexing Logs</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable or disable logging of product IDs during indexing (e.g., for debugging purposes).</comment>
+                </field>
                 <group id="product" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Product</label>
                     <field id="enable_product_content_hash_check" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">

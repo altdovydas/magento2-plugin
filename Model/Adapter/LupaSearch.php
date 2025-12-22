@@ -17,6 +17,8 @@ use LupaSearch\LupaSearchPluginCore\Model\LupaClientFactoryInterface;
 use LupaSearch\Exceptions\ApiException;
 use LupaSearch\Exceptions\BadResponseException;
 use LupaSearch\LupaClientInterface;
+use Psr\Log\LoggerInterface;
+use LupaSearch\LupaSearchPlugin\Model\Config\IndexConfigInterface;
 use Throwable;
 
 use function array_column;
@@ -59,6 +61,10 @@ class LupaSearch implements SearchEngineAdapterInterface
 
     private SuggestionsApiFactory $suggestionsApiFactory;
 
+    private LoggerInterface $logger;
+
+    private IndexConfigInterface $indexConfig;
+
     public function __construct(
         IndexProviderInterface $indexProvider,
         SearchQueryFactoryInterface $searchQueryFactory,
@@ -66,7 +72,9 @@ class LupaSearch implements SearchEngineAdapterInterface
         LupaClientFactoryInterface $lupaClientFactory,
         DocumentsApiFactory $documentsApiFactory,
         SearchQueriesApiFactory $searchQueriesApiFactory,
-        SuggestionsApiFactory $suggestionsApiFactory
+        SuggestionsApiFactory $suggestionsApiFactory,
+        LoggerInterface $logger,
+        IndexConfigInterface $indexConfig
     ) {
         $this->indexProvider = $indexProvider;
         $this->searchQueryFactory = $searchQueryFactory;
@@ -75,6 +83,8 @@ class LupaSearch implements SearchEngineAdapterInterface
         $this->documentsApiFactory = $documentsApiFactory;
         $this->searchQueriesApiFactory = $searchQueriesApiFactory;
         $this->suggestionsApiFactory = $suggestionsApiFactory;
+        $this->logger = $logger;
+        $this->indexConfig = $indexConfig;
     }
 
     /**
@@ -87,6 +97,13 @@ class LupaSearch implements SearchEngineAdapterInterface
         }
 
         try {
+            if ($this->indexConfig->shouldIncludeIndexingLogs()) {
+                $documentIds = array_column($documents, 'id');
+                $this->logger->info(
+                    'Adding ' . count($documents) . ' documents to index ' . $this->getIndexId() .
+                    ' with IDs: ' . implode(', ', $documentIds)
+                );
+            }
             $response = $this->getDocumentsApi()->importDocuments(
                 $this->getIndexId(),
                 ['documents' => array_values($documents)],
@@ -108,6 +125,13 @@ class LupaSearch implements SearchEngineAdapterInterface
         }
 
         try {
+            if ($this->indexConfig->shouldIncludeIndexingLogs()) {
+                $documentIds = array_column($documents, 'id');
+                $this->logger->info(
+                    'Updating ' . count($documents) . ' documents in index ' . $this->getIndexId() .
+                    ' with IDs: ' . implode(', ', $documentIds)
+                );
+            }
             $response = $this->getDocumentsApi()->updateDocuments(
                 $this->getIndexId(),
                 ['documents' => array_values($documents)],
@@ -129,6 +153,12 @@ class LupaSearch implements SearchEngineAdapterInterface
         }
 
         try {
+            if ($this->indexConfig->shouldIncludeIndexingLogs()) {
+                $this->logger->info(
+                    'Deleting ' . count($primaryKeys) . ' documents from index ' . $this->getIndexId() .
+                    ' with IDs: ' . implode(', ', $primaryKeys)
+                );
+            }
             $this->getDocumentsApi()->batchDelete(
                 $this->getIndexId(),
                 ['ids' => array_values($primaryKeys)],

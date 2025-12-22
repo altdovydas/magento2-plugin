@@ -58,6 +58,11 @@ class SuggestionsGenerator implements SuggestionsGeneratorInterface
 
         try {
             $searchEngine->getSuggestionApi()->generateSuggestions($indexId);
+            $this->logger->info(sprintf(
+                'Successfully dispatched generate suggestions action for store ID %d using index ID %s.',
+                $storeId,
+                $indexId
+            ));
         } catch (Throwable $e) {
             $this->logger->error($e->getMessage() . PHP_EOL . $e->getTraceAsString());
         }

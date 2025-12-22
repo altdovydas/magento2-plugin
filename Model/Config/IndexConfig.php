@@ -11,6 +11,7 @@ class IndexConfig implements IndexConfigInterface
 {
     private const XML_CONFIG_PATH_ENABLED = 'lupasearch/index/enabled';
     private const XML_CONFIG_PATH_BATCH_SIZE = 'lupasearch/index/batch_size';
+    private const XML_CONFIG_PATH_INCLUDE_INDEXING_LOGS = 'lupasearch/index/include_indexing_logs';
 
     protected ScopeConfigInterface $scopeConfig;
 
@@ -27,5 +28,10 @@ class IndexConfig implements IndexConfigInterface
     public function getBatchSize(): int
     {
         return (int)$this->scopeConfig->getValue(self::XML_CONFIG_PATH_BATCH_SIZE);
+    }
+
+    public function shouldIncludeIndexingLogs(): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::XML_CONFIG_PATH_INCLUDE_INDEXING_LOGS);
     }
 }
