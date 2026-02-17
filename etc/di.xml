@@ -512,8 +512,6 @@
         <arguments>
             <argument name="hydrators" xsi:type="array">
                 <item name="id" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\Id</item>
-                <item name="rating_summary" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\RatingSummary</item>
-                <item name="review_count" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\ReviewCount</item>
             </argument>
         </arguments>
     </type>
@@ -545,6 +543,8 @@
                 <item name="configurable" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\Configurable</item>
                 <item name="grouped" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\Grouped</item>
                 <item name="bundle" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\Bundle</item>
+                <item name="rating_summary" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\RatingSummary</item>
+                <item name="review_count" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Hydrator\ReviewCount</item>
             </argument>
         </arguments>
     </virtualType>
@@ -598,6 +598,12 @@
             <argument name="dataModifier" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Data\Modifier</argument>
         </arguments>
     </type>
+
+    <virtualType name="LupaSearch\LupaSearchPlugin\Model\Provider\ProductsPriceProvider" type="LupaSearch\LupaSearchPlugin\Model\Provider\ProductsProvider">
+        <arguments>
+            <argument name="dataModifier" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Data\Modifier</argument>
+        </arguments>
+    </virtualType>
 
     <type name="Magento\Framework\Console\CommandListInterface">
         <arguments>
@@ -815,7 +821,7 @@
     <virtualType name="LupaSearch\LupaSearchPlugin\Model\Indexer\Price\Action\Full" type="LupaSearch\LupaSearchPlugin\Model\Indexer\Action\Full">
         <arguments>
             <argument name="searchEngineAdapter" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Adapter\LupaSearchProductAdapter</argument>
-            <argument name="dataProvider" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\ProductsProviderInterface</argument>
+            <argument name="dataProvider" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Price\ProductsProvider</argument>
             <argument name="topic" xsi:type="string">lupasearch_price</argument>
         </arguments>
     </virtualType>
@@ -837,7 +843,7 @@
     <virtualType name="LupaSearch\LupaSearchPlugin\Model\Indexer\Price\Action\Rows" type="LupaSearch\LupaSearchPlugin\Model\Indexer\Action\Rows">
         <arguments>
             <argument name="searchEngineAdapter" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Adapter\LupaSearchProductAdapter</argument>
-            <argument name="dataProvider" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\ProductsProviderInterface</argument>
+            <argument name="dataProvider" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Price\ProductsProvider</argument>
             <argument name="topic" xsi:type="string">lupasearch_price</argument>
         </arguments>
     </virtualType>
@@ -934,7 +940,6 @@
                 <item name="category_parent_ids" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Provider\CategoryParentIdsCache</item>
                 <item name="category_position" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Categories\PositionProviderCache</item>
                 <item name="category_anchor" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Provider\Categories\AnchorProviderCache</item>
-                <item name="review" xsi:type="object">LupaSearch\LupaSearchPlugin\Model\Product\Provider\ReviewProvider</item>
             </argument>
         </arguments>
     </virtualType>

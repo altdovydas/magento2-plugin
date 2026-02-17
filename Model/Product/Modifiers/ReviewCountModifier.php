@@ -14,10 +14,16 @@ use function array_map;
 
 class ReviewCountModifier implements DataModifierInterface
 {
+    private ReviewsConfig $reviewsConfig;
+
+    private ReviewResource $reviewResource;
+
     public function __construct(
-        private readonly ReviewsConfig $reviewsConfig,
-        private readonly ReviewResource $reviewResource,
+        ReviewsConfig $reviewsConfig,
+        ReviewResource $reviewResource,
     ) {
+        $this->reviewsConfig = $reviewsConfig;
+        $this->reviewResource = $reviewResource;
     }
 
     public function modify(Traversable $data): void
