@@ -10,8 +10,11 @@ use Magento\Review\Model\Review\Config as ReviewsConfig;
 
 class RatingSummary implements ProductHydratorInterface
 {
-    public function __construct(private readonly ReviewsConfig $reviewsConfig)
+    private ReviewsConfig $reviewsConfig;
+
+    public function __construct(ReviewsConfig $reviewsConfig)
     {
+        $this->reviewsConfig = $reviewsConfig;
     }
 
     /**
